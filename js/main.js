@@ -3,10 +3,11 @@ import {extractMatchingClasses} from "./utils/extractClasses.js";
 import {generateCssFromClasses} from "./utils/generateCss.js";
 
 (function () {
-    const isDev = true
+    const PROD_DOMAINS = ['tradersunion.com']
+    const isDevMode = !PROD_DOMAINS.includes(location.hostname);
     const elements = document.querySelectorAll('[class]');
-    const classSet = extractMatchingClasses(elements, config, isDev);
-    const css = generateCssFromClasses(classSet, config, isDev);
+    const classSet = extractMatchingClasses(elements, config, isDevMode);
+    const css = generateCssFromClasses(classSet, config, isDevMode);
 
     if (css) {
         const styleTag = document.createElement('style');
