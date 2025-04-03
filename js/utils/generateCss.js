@@ -29,6 +29,8 @@ export function generateCssFromClasses(classSet, config, isDev) {
 
             if (value === 'px') {
                 val = isNegative ? '-1px' : '1px';
+            } else if (value === 'auto') {
+                val = 'auto';
             } else if (!isNaN(parseFloat(value))) {
                 val = `${isNegative ? '-' : ''}${parseFloat(value) * 4}px`
             }
