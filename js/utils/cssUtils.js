@@ -14,3 +14,13 @@ export function createRule(cls, property, value, isImportant = false, isResponsi
     }
     return `.${escapeClass(cls)} {\n ${property.map(p => `\t${p}: ${value}${isImportant ? ' !important' : ''};`).join(' \n ')} \n}`;
 }
+
+export function resolveCssValue(value, isNegative) {
+    if (value === 'px') {
+        return isNegative ? '-1px' : '1px';
+    } else if (!isNaN(parseFloat(value))) {
+        return `${isNegative ? '-' : ''}${parseFloat(value) * 4}px`
+    } else {
+        return value;
+    }
+}

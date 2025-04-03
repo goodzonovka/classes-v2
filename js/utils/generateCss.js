@@ -1,5 +1,5 @@
 import {responsiveMap, responsiveRules} from "./responsiveMap.js";
-import {createRule} from "./cssUtils.js";
+import {createRule, resolveCssValue} from "./cssUtils.js";
 
 export function generateCssFromClasses(classSet, config, isDev) {
     let css = '';
@@ -25,15 +25,7 @@ export function generateCssFromClasses(classSet, config, isDev) {
 
             if (value.startsWith('-')) value = value.slice(1)
 
-            let val = '';
-
-            if (value === 'px') {
-                val = isNegative ? '-1px' : '1px';
-            } else if (value === 'auto') {
-                val = 'auto';
-            } else if (!isNaN(parseFloat(value))) {
-                val = `${isNegative ? '-' : ''}${parseFloat(value) * 4}px`
-            }
+            let val = resolveCssValue(value, isNegative);
 
             isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, prefixKey)
 
