@@ -1,7 +1,11 @@
-import {margin} from "./margin.js";
-import {padding} from "./padding.js";
+import {position} from "./position.js";
+import {spacingConfig} from "./spacingConfig";
+import {display} from "./display.js";
+import {size} from "./size.js";
 
 export const config = {
-    ...margin,
-    ...padding,
+    ...spacingConfig,
+    ...position,
+    ...display,
+    ...size,
 }

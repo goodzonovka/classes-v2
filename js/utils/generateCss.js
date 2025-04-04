@@ -1,5 +1,6 @@
-import {responsiveMap, responsiveRules} from "./responsiveMap.js";
+import {responsiveRules} from "./responsive.js";
 import {createRule, resolveCssValue} from "./cssUtils.js";
+import {RESPONSIVE_MAP} from "../config/constants.js";
 
 export function generateCssFromClasses(classSet, config, isDev) {
     let css = '';
@@ -25,20 +26,22 @@ export function generateCssFromClasses(classSet, config, isDev) {
 
             if (value.startsWith('-')) value = value.slice(1)
 
-            let val = resolveCssValue(value, isNegative);
+            let val = resolveCssValue(value, isNegative, props, rawClass, prefix);
 
             isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, prefixKey)
 
+            if (!val) continue;
+
             let rule = null;
 
-            if (responsiveMap[prefixKey]) {
+            if (RESPONSIVE_MAP[prefixKey]) {
                 rule = createRule(className, props, val, isImportant, true);
                 responsiveRules[prefixKey].push(rule);
             } else {
                 rule = createRule(className, props, val, isImportant)
                 rules.push(rule)
             }
-
+            break;
         }
     }
 
@@ -47,13 +50,13 @@ export function generateCssFromClasses(classSet, config, isDev) {
     for (const key in responsiveRules) {
         const rules = responsiveRules[key];
         if (rules.length) {
-            css += `\n\n@media (min-width: ${responsiveMap[key]}px) {\n\t${rules.join('\n\t')}\n}`;
+            css += `\n\n@media (min-width: ${RESPONSIVE_MAP[key]}px) {\n\t${rules.join('\n\t')}\n}`;
         }
     }
 
     return isDev ? css : css.replace(/\s/g, '');
 }
 
-function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey) {
+function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey, isStatic, isSpecialValue) {
     console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\n\n`)
 }

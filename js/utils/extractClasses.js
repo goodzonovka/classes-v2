@@ -1,4 +1,4 @@
-import {responsivePrefixes} from "./responsiveMap.js";
+import {responsivePrefixes} from "./responsive.js";
 
 export const extractMatchingClasses = (elements, configMap, isDev) => {
     const classSet = new Set();
@@ -18,7 +18,10 @@ export const extractMatchingClasses = (elements, configMap, isDev) => {
             for (const prefix in configMap) {
                 const isMatch = rawClass.startsWith(prefix) || rawClass.startsWith(`-${prefix}`);
 
-                isMatch && classSet.add(className);
+                if (isMatch) {
+                    classSet.add(className);
+                    break;
+                }
             }
         });
     })
