@@ -20,17 +20,23 @@ export function createRule(cls, property, value, isImportant = false, isResponsi
 export function resolveCssValue(value, isNegative, props, rawClass, prefix) {
     const isStatic = specialLogic?.[props.join()];
     const isSpecialValue = specialLogic?.[props.join()]?.[rawClass];
-
     if (value === 'px') {
         return isNegative ? '-1px' : '1px';
     } else if (value === 'auto') {
         return 'auto';
     } else if (value === 'full') {
         return '100%';
+    } else if (value === 'min') {
+        return 'min-content';
+    } else if (value === 'max') {
+        return 'max-content';
+    } else if (value === 'fit') {
+        return 'fit-content';
     } else if (/^\d+\/\d+$/.test(value)) {
         const [num1, num2] = value.split('/');
         return `${num1 * 100 / num2}%`; // для значений: 1/2, 3/4, 9/12 и тд, возвращает процент
     } else if (isSpecialValue) {
+        console.log(isSpecialValue)
         return isSpecialValue; // особые значения из списка (d-flex: flex, w-screen: 100vw и тд)
     } else if (!isNaN(parseFloat(value))) {
         return `${isNegative ? '-' : ''}${parseFloat(value) * 4}px`

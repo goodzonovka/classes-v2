@@ -14,8 +14,23 @@ export const specialLogic = {
     'position': true,
     'width': {
         'w-screen': '100vw',
-        'w-min': 'min-content',
-        'w-max': 'max-content',
-        'w-fit': 'fit-content',
+    },
+    'min-width': {
+        'min-w-screen': '100vw',
+    },
+    'max-width': {
+        'max-w-screen': '100vw',
+        'max-w-none': 'none',
+    },
+    'height': {
+        'h-screen': '100vh',
+    },
+    'min-height': {
+        'min-h-screen': '100vh',
+    },
+    'max-height': {
+        'max-h-screen': '100vh',
+    },
+    'width,height': {
     }
 }
