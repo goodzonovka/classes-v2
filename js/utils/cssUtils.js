@@ -22,6 +22,8 @@ export function resolveCssValue(value, isNegative, props, rawClass, prefix, isSt
 
     let result = null;
 
+    console.log(value)
+
     if (value === 'px') {
         result = isNegative ? '-1px' : '1px';
     } else if (value === 'auto') {
@@ -34,7 +36,7 @@ export function resolveCssValue(value, isNegative, props, rawClass, prefix, isSt
         result = 'max-content';
     } else if (value === 'fit') {
         result = 'fit-content';
-    } else if (prefix === 'leading-' && !isNaN(parseFloat(value)) || props.join() === 'text-align') {
+    } else if ((prefix === 'leading-' || prefix === 'order-') && !isNaN(parseFloat(value)) || props.join() === 'text-align') {
         result = value;
     } else if (/^\d+\/\d+$/.test(value)) {
         const [num1, num2] = value.split('/');

@@ -25,7 +25,7 @@ export function generateCssFromClasses(classSet, config, isDev) {
             const isStatic = Boolean(specialLogic?.[props.join()]);
             const isNegative = rawClass.startsWith(`-${prefix}`);
 
-            if (isStatic && rawClass !== prefix) continue;
+            // if (isStatic && rawClass !== prefix) continue;
 
             let value = rawClass.slice(prefix.length)
 
