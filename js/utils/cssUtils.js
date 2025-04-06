@@ -17,30 +17,35 @@ export function createRule(cls, property, value, isImportant = false, isResponsi
     return `.${escapeClass(cls)} {\n ${property.map(p => `\t${p}: ${value}${isImportant ? ' !important' : ''};`).join(' \n ')} \n}`;
 }
 
-export function resolveCssValue(value, isNegative, props, rawClass, prefix) {
-    const isStatic = specialLogic?.[props.join()];
+export function resolveCssValue(value, isNegative, props, rawClass, prefix, isStatic) {
     const isSpecialValue = specialLogic?.[props.join()]?.[rawClass];
+
+    let result = null;
+
     if (value === 'px') {
-        return isNegative ? '-1px' : '1px';
+        result = isNegative ? '-1px' : '1px';
     } else if (value === 'auto') {
-        return 'auto';
+        result = 'auto';
     } else if (value === 'full') {
-        return '100%';
+        result = '100%';
     } else if (value === 'min') {
-        return 'min-content';
+        result = 'min-content';
     } else if (value === 'max') {
-        return 'max-content';
+        result = 'max-content';
     } else if (value === 'fit') {
-        return 'fit-content';
+        result = 'fit-content';
+    } else if (prefix === 'leading-' && !isNaN(parseFloat(value)) || props.join() === 'text-align') {
+        result = value;
     } else if (/^\d+\/\d+$/.test(value)) {
         const [num1, num2] = value.split('/');
-        return `${num1 * 100 / num2}%`; // для значений: 1/2, 3/4, 9/12 и тд, возвращает процент
+        result = `${num1 * 100 / num2}%`; // для значений: 1/2, 3/4, 9/12 и тд, возвращает процент
     } else if (isSpecialValue) {
-        console.log(isSpecialValue)
-        return isSpecialValue; // особые значения из списка (d-flex: flex, w-screen: 100vw и тд)
+        result = isSpecialValue; // особые значения из списка (d-flex: flex, w-screen: 100vw и тд)
     } else if (!isNaN(parseFloat(value))) {
-        return `${isNegative ? '-' : ''}${parseFloat(value) * 4}px`
-    } else if (isStatic && rawClass === prefix) {
-        return rawClass; // для статических, где класс = значению (absolute, relative, flex и тд)
+        result = `${isNegative ? '-' : ''}${parseFloat(value) * 4}px`
+    } else if (isStatic) {
+        result = rawClass; // для статических, где класс = значению (absolute, relative, flex и тд)
     }
+
+    return [result, isSpecialValue]
 }

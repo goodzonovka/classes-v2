@@ -1,6 +1,7 @@
 import {responsiveRules} from "./responsive.js";
 import {createRule, resolveCssValue} from "./cssUtils.js";
 import {RESPONSIVE_MAP} from "../config/constants.js";
+import {specialLogic} from "./mappings.js";
 
 export function generateCssFromClasses(classSet, config, isDev) {
     let css = '';
@@ -21,14 +22,18 @@ export function generateCssFromClasses(classSet, config, isDev) {
             if (!rawClass.startsWith(prefix) && !rawClass.startsWith(`-${prefix}`)) continue;
 
             const props = config[prefix];
+            const isStatic = Boolean(specialLogic?.[props.join()]);
             const isNegative = rawClass.startsWith(`-${prefix}`);
+
+            if (isStatic && rawClass !== prefix) continue;
+
             let value = rawClass.slice(prefix.length)
 
             if (value.startsWith('-')) value = value.slice(1)
 
-            let val = resolveCssValue(value, isNegative, props, rawClass, prefix);
+            let [val, isSpecialValue] = resolveCssValue(value, isNegative, props, rawClass, prefix, isStatic);
 
-            isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, prefixKey)
+            isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, prefixKey, isStatic, isSpecialValue)
 
             if (!val) continue;
 
@@ -58,5 +63,5 @@ export function generateCssFromClasses(classSet, config, isDev) {
 }
 
 function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey, isStatic, isSpecialValue) {
-    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\n\n`)
+    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsStatic: ${isStatic}\nIsSpecialValue: ${isSpecialValue}\n\n`)
 }
