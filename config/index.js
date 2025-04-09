@@ -1,9 +1,11 @@
 import {spacingConfig} from "./spacingConfig";
 import {textConfig} from "./textConfig";
+import {flexConfig} from "./flexConfig";
 import {position} from "./position.js";
 import {display} from "./display.js";
 import {size} from "./size.js";
-import {flexConfig} from "./flexConfig";
+import {cursor} from "./cursor.js";
+import {background} from "./background.js";
 
 export const config = {
     ...spacingConfig,
@@ -12,4 +14,6 @@ export const config = {
     ...position,
     ...display,
     ...size,
+    ...cursor,
+    ...background,
 }

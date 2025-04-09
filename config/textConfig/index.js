@@ -4,6 +4,7 @@ import {lineHeight} from "./lineHeight.js";
 import {textAlign} from "./textAlign.js";
 import {whiteSpace} from "./whiteSpace.js";
 import {userSelect} from "./userSelect.js";
+import {color} from "./color.js";
 
 export const textConfig = {
     ...fontWeight,
@@ -12,4 +13,5 @@ export const textConfig = {
     ...textAlign,
     ...whiteSpace,
     ...userSelect,
+    ...color,
 }

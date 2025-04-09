@@ -1,4 +1,5 @@
 import {specialLogic} from "./mappings.js";
+import {colors, colorNames} from "./color.js";
 
 export function escapeClass(cls) {
     return cls
@@ -11,18 +12,19 @@ export function escapeClass(cls) {
 }
 
 export function createRule(cls, property, value, isImportant = false, isResponsive = false) {
+    console.log(property.length)
     if (isResponsive) {
         return `.${escapeClass(cls)} {\n ${property.map(p => `\t\t${p}: ${value}${isImportant ? ' !important' : ''};`).join(' \n ')} \n\t}`;
     }
-    return `.${escapeClass(cls)} {\n ${property.map(p => `\t${p}: ${value}${isImportant ? ' !important' : ''};`).join(' \n ')} \n}`;
+    return `.${escapeClass(cls)} {\n ${property.map(p => `\t${p}: ${value}${isImportant ? ' !important' : ''}`).join('; \n ')} \n}`;
 }
 
 export function resolveCssValue(value, isNegative, props, rawClass, prefix, isStatic) {
     const isSpecialValue = specialLogic?.[props.join()]?.[rawClass];
 
-    let result = null;
+    if (isStatic && !isSpecialValue && prefix !== rawClass) return [null, null];
 
-    console.log(value)
+    let result = null;
 
     if (value === 'px') {
         result = isNegative ? '-1px' : '1px';
@@ -36,7 +38,7 @@ export function resolveCssValue(value, isNegative, props, rawClass, prefix, isSt
         result = 'max-content';
     } else if (value === 'fit') {
         result = 'fit-content';
-    } else if ((prefix === 'leading-' || prefix === 'order-') && !isNaN(parseFloat(value)) || props.join() === 'text-align') {
+    } else if ((prefix === 'leading-' || prefix === 'order-') && !isNaN(parseFloat(value))) {
         result = value;
     } else if (/^\d+\/\d+$/.test(value)) {
         const [num1, num2] = value.split('/');
@@ -47,7 +49,20 @@ export function resolveCssValue(value, isNegative, props, rawClass, prefix, isSt
         result = `${isNegative ? '-' : ''}${parseFloat(value) * 4}px`
     } else if (isStatic) {
         result = rawClass; // для статических, где класс = значению (absolute, relative, flex и тд)
+    } else if (props.join() === 'color' || props.join() === 'background-color' && colorIsValid(value)) {
+        result = `var(--${value})`
     }
-
     return [result, isSpecialValue]
+}
+
+function colorIsValid(value) {
+    const [colorName, shade] = value.split('-');
+
+    if (!colorName) return false;
+
+    if (shade && !colors[colorName]?.[shade]) return false;
+
+    if (!shade && !colors['other'][colorName]) return false;
+
+    return true;
 }

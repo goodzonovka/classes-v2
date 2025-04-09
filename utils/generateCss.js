@@ -1,6 +1,6 @@
 import {responsiveRules} from "./responsive.js";
 import {createRule, resolveCssValue} from "./cssUtils.js";
-import {RESPONSIVE_MAP} from "../config/constants.js";
+import {RESPONSIVE_MAP} from "./responsive.js";
 import {specialLogic} from "./mappings.js";
 
 export function generateCssFromClasses(classSet, config, isDev) {
@@ -18,14 +18,14 @@ export function generateCssFromClasses(classSet, config, isDev) {
 
         const prefixes = Object.keys(config);
 
+        // console.log(prefixes)
         for (const prefix of prefixes) {
             if (!rawClass.startsWith(prefix) && !rawClass.startsWith(`-${prefix}`)) continue;
 
-            const props = config[prefix];
+            const props = config[prefix]
+
             const isStatic = Boolean(specialLogic?.[props.join()]);
             const isNegative = rawClass.startsWith(`-${prefix}`);
-
-            // if (isStatic && rawClass !== prefix) continue;
 
             let value = rawClass.slice(prefix.length)
 
