@@ -1,0 +1,27 @@
+const display = {
+    'block': ['display'],
+    'inline-block': ['display'],
+    'inline': ['display'],
+    'd-flex': ['display'],
+    'flex': ['display'],
+    'inline-flex': ['display'],
+    'd-table': ['display'],
+    'table': ['display'],
+    'inline-table': ['display'],
+    'table-caption': ['display'],
+    'table-cell': ['display'],
+    'table-column': ['display'],
+    'table-column-group': ['display'],
+    'table-footer-group': ['display'],
+    'table-header-group': ['display'],
+    'table-row-group': ['display'],
+    'table-row': ['display'],
+    'flow-root': ['display'],
+    'grid': ['display'],
+    'inline-grid': ['display'],
+    'contents': ['display'],
+    'list-item': ['display'],
+    'hidden': ['display'],
+};
+
+module.exports = { display };
