@@ -97,7 +97,7 @@ const colorNames = Object.keys(colors).flatMap(key => {
     return key;
 })
 
-function generateCssVars(isDev) {
+function generateCssVars(isMinCss) {
     // Генерируем CSS-переменные
     let cssVars = ':root {\n';
 
@@ -113,7 +113,7 @@ function generateCssVars(isDev) {
 
     cssVars += '}';
 
-    return isDev ? cssVars : cssVars.replace(/\s/g, '');
+    return !isMinCss ? cssVars : cssVars.replace(/\s/g, '');
 }
 
 function getColorInfo(fullValue) {

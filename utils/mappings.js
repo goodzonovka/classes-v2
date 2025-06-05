@@ -285,6 +285,13 @@ const specialLogic = {
         'justify-items-center': 'center',
         'justify-items-stretch': 'stretch',
     },
+    'place-items': {
+      'place-items-start': 'start',
+      'place-items-end': 'end',
+      'place-items-center': 'center',
+      'place-items-baseline': 'baseline',
+      'place-items-stretch': 'stretch',
+    },
     'border-collapse': {
         'border-collapse': 'collapse',
         'border-separate': 'separate',

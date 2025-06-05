@@ -3,13 +3,13 @@ const { createRule, resolveCssValue, states } = require('./cssUtils.js');
 const { colorNames, fixedColorValues, getColorInfo } = require('./color.js');
 const { isNumber } = require('./functions.js');
 
-function generateCssFromClasses(classSet, config, isDev) {
+function generateCssFromClasses(classSet, config, isDev, isMinCss) {
     let css = '';
 
     const rules = [];
     let translatePropertiesAdded = false;
 
-    const borderSolidRule = isDev ? '* {\n \tborder: 0 solid \n}' : '*{border:0 solid}'
+    const borderSolidRule = !isMinCss ? '* {\n \tborder: 0 solid \n}' : '*{border:0 solid}'
     rules.push(borderSolidRule)
 
 
@@ -100,7 +100,7 @@ function generateCssFromClasses(classSet, config, isDev) {
 
             let [val, isStaticValue] = resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInfo);
 
-            isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, responsivePrefix, isStaticValue, state, colorInfo)
+            isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, responsivePrefix, isStaticValue, colorInfo)
 
             if (val === null || val === undefined) break;
 
@@ -110,7 +110,7 @@ function generateCssFromClasses(classSet, config, isDev) {
 
             if (!translatePropertiesAdded && propsStr === 'translate') {
                 let translateProperties;
-                if (isDev) {
+                if (!isMinCss) {
                     translateProperties = `@property --cl-translate-x {\n\tsyntax: "*";\n\tinherits: false;\n\tinitial-value: 0\n}\n\n@property --cl-translate-y {\n\tsyntax: "*";\n\tinherits: false;\n\tinitial-value: 0\n}`
                 } else {
                     translateProperties = `@property --cl-translate-x{syntax:"*";inherits:false;initial-value:0}@property --cl-translate-y{syntax:"*";inherits:false;initial-value:0}`
@@ -120,8 +120,8 @@ function generateCssFromClasses(classSet, config, isDev) {
             }
 
 
-            rule = createRule(className, props, val, prefix, isImportant, state, isResponsive, isDev);
-            // rule = isDev ? rule.replace(/\s/g, '') : rule;
+            rule = createRule(className, props, val, prefix, isImportant, state, isResponsive, isMinCss);
+
             if (isResponsive) {
                 responsiveRules[responsivePrefix].push(rule);
             } else {
@@ -133,20 +133,20 @@ function generateCssFromClasses(classSet, config, isDev) {
 
 
 
-    css += isDev ? rules.join('\n\n') : rules.join('');
+    css += !isMinCss ? rules.join('\n\n') : rules.join('');
 
     for (const key in responsiveRules) {
         const rules = responsiveRules[key];
         if (rules.length) {
-            css += isDev ? `\n\n@media (min-width: ${RESPONSIVE_MAP[key]}px) {\n\t${rules.join('\n\t')}\n}` :
+            css += !isMinCss ? `\n\n@media (min-width: ${RESPONSIVE_MAP[key]}px) {\n\t${rules.join('\n\t')}\n}` :
                             `@media (min-width:${RESPONSIVE_MAP[key]}px){${rules.join('')}}`;
         }
     }
 
-    return isDev ? css : css;
+    return css;
 }
 
-function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey, isStaticValue, state, colorInfo) {
+function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey, isStaticValue, colorInfo) {
     let colorInfoStr = '';
     if (colorInfo) {
         colorInfoStr = '\n\n'
@@ -158,7 +158,7 @@ function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefi
             colorInfoStr += `${key}: ${colorInfo[key]}\n`
         }
     }
-    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsSpecialValue: ${isStaticValue}\nState: ${state} ${colorInfoStr}\n\n`)
+    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsSpecialValue: ${isStaticValue} ${colorInfoStr}\n\n`)
 }
 
 module.exports = {
