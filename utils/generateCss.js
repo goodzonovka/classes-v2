@@ -30,6 +30,7 @@ function generateCssFromClasses(classSet, config, isDev) {
             }
         })
 
+
         states.forEach(el => {
             const index = classNameParts.indexOf(el);
             if (index !== -1) {
@@ -42,6 +43,13 @@ function generateCssFromClasses(classSet, config, isDev) {
         const isImportant = rawClass.startsWith('!');
 
         rawClass = isImportant ? rawClass.slice(1) : rawClass;
+
+        if (state === 'has') {
+            const arrRawClass = rawClass.split(',');
+            if (arrRawClass.length === 2 && /^\[.*\]$/.test(arrRawClass[0])) {
+                rawClass = arrRawClass[1]
+            }
+        }
 
         const prefixes = Object.keys(config);
 
@@ -79,7 +87,7 @@ function generateCssFromClasses(classSet, config, isDev) {
 
             let colorInfo, isColor;
 
-            if (props.includes('color') || props.includes('background-color') || props.join() === 'border-color') {
+            if (props.includes('color') || props.includes('background-color') || props.join() === 'border-color' || props.join() === 'divide-color') {
                 isColor = true;
                 colorInfo = getColorInfo(value)
             }
@@ -92,7 +100,7 @@ function generateCssFromClasses(classSet, config, isDev) {
 
             let [val, isStaticValue] = resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInfo);
 
-            isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, responsivePrefix, isStaticValue, colorInfo)
+            isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, responsivePrefix, isStaticValue, state, colorInfo)
 
             if (val === null || val === undefined) break;
 
@@ -138,7 +146,7 @@ function generateCssFromClasses(classSet, config, isDev) {
     return isDev ? css : css;
 }
 
-function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey, isStaticValue, colorInfo) {
+function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey, isStaticValue, state, colorInfo) {
     let colorInfoStr = '';
     if (colorInfo) {
         colorInfoStr = '\n\n'
@@ -150,7 +158,7 @@ function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefi
             colorInfoStr += `${key}: ${colorInfo[key]}\n`
         }
     }
-    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsSpecialValue: ${isStaticValue} ${colorInfoStr}\n\n`)
+    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsSpecialValue: ${isStaticValue}\nState: ${state} ${colorInfoStr}\n\n`)
 }
 
 module.exports = {

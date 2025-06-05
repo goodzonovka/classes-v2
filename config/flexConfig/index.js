@@ -9,6 +9,7 @@ const {alignContent} = require("./alignContent.js");
 const {wrap} = require("./wrap.js");
 const {order} = require("./order.js");
 const {flex} = require("./flex.js");
+const {flexBasis} = require("./flexBasis.js");
 
 const flexConfig = {
   ...direction,
@@ -22,6 +23,7 @@ const flexConfig = {
   ...wrap,
   ...order,
   ...flex,
+  ...flexBasis,
 };
 
 module.exports = {flexConfig}

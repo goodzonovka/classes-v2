@@ -284,7 +284,15 @@ const specialLogic = {
         'justify-items-end': 'end',
         'justify-items-center': 'center',
         'justify-items-stretch': 'stretch',
-    }
+    },
+    'border-collapse': {
+        'border-collapse': 'collapse',
+        'border-separate': 'separate',
+    },
+    'table-layout': {
+        'table-auto': 'auto',
+        'table-fixed': 'fixed',
+    },
 }
 
 module.exports = {

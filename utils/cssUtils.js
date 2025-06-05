@@ -15,7 +15,8 @@ function escapeClass(cls) {
         .replace(/,/g, '\\,')
         .replace(/\(/g, '\\(')
         .replace(/\)/g, '\\)')
-        .replace(/\%/g, '\\%');
+        .replace(/\%/g, '\\%')
+        .replace(/\>/g, '\\>');
 }
 
 function resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInfo) {
@@ -23,7 +24,7 @@ function resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInf
 
     let result = null;
 
-    console.log(value, propsStr, rawClass, prefix)
+    // console.log(value, propsStr, rawClass, prefix)
 
     if (onlyStaticClasses.includes(propsStr)) {
         result = isStaticValue || null;
@@ -34,7 +35,7 @@ function resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInf
         }
     } else if (prefix === 'opacity-') {
         result = value < 10 ? `0.0${value}` : value < 100 ? `0.${value}` : 1;
-    } else if (uniqueRules[propsStr] && propsStr !== 'space') {
+    } else if (uniqueRules[propsStr] && uniqueRules[propsStr].getValue) {
         result = uniqueRules[propsStr].getValue(value, rawClass, prefix, isNegative);
     } else if (value === 'px') {
         result = isNegative ? '-1px' : '1px';
@@ -56,7 +57,7 @@ function resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInf
         result = `rotate(${isNegative ? '-' : ''}${value}deg)`;
     } else if (prefix === 'content-') {
         result = value.slice(1, -1);
-    } else if (prefix === 'grid-cols-' && (!isNaN(parseFloat(value)) || value === 'none')) {
+    } else if ((prefix === 'grid-cols-' || prefix === 'grid-rows-') && (!isNaN(parseFloat(value)) || value === 'none')) {
         if (value === 'none') {
             result = 'none';
         } else {
@@ -64,13 +65,13 @@ function resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInf
         }
     } else if (propsStr === 'flex-shrink' || propsStr === 'flex-grow') {
         result = shrinkGrow[rawClass];
-    } else if (prefixesColors.includes(propsStr)) {
+    } else if (propColors.includes(propsStr)) {
         result = getColorValue(propsStr, colorInfo);
     } else if ((prefix === 'line-clamp-' && value === 'none') || (prefix === 'max-h-' && value === 'none')) {
         result = 'none';
-    } else if (prefixesForBorderRadius.includes(propsStr.split(',')[0]) && isNaN(value)) {
+    } else if (prefixesForBorderRadius.includes(propsStr.split(',')[0]) && borderRadiusValues[value]) {
         result = borderRadiusValues[value];
-    } else if (prefixesForStaticValuePx.includes(prefix) && !isNaN(parseFloat(value))) {
+    } else if (prefixesForStaticValuePx.includes(prefix) && !isNaN(value)) {
         result = `${value}px`;
     } else if (prefixesForStaticOnePx.includes(prefix) && prefix === rawClass) {
         result = '1px';
@@ -115,9 +116,10 @@ const onlyStaticClasses = [
     'background-size',
     'text-overflow',
     'justify-items',
+    'border-collapse',
 ];
 
-const prefixesColors = ['color', 'background-color', 'border-color'];
+const propColors = ['color', 'background-color', 'border-color', 'divide-color'];
 const prefixesForStaticValuePx = [
     'border-',
     'border-x-',
@@ -126,6 +128,10 @@ const prefixesForStaticValuePx = [
     'border-r-',
     'border-b-',
     'border-l-',
+    'divide-x-',
+    'divide-y-',
+    'divide-x-reverse-',
+    'divide-y-reverse-',
 ];
 const prefixesForStaticOnePx = [
     'border',
@@ -275,6 +281,41 @@ const uniqueRules = {
                 state ? `:${state}` : ''
             }>:not([hidden])~:not([hidden]){${property}:${value}}`;
         }
+    },
+    'divide-width': {
+        getRule: function (cls, value, prefix, isDev, state) {
+            // console.log(cls, value, prefix, isDev, state)
+
+            let property;
+
+            if (prefix === 'divide-y-') property = 'border-top-width';
+            else if (prefix === 'divide-y-reverse-') property = 'border-bottom-width';
+            else if (prefix === 'divide-x-reverse-') property = 'border-right-width';
+            else if (prefix === 'divide-x-') property = 'border-left-width';
+
+            if (isDev) {
+                return `.${escapeClass(cls)}${
+                    state ? `:${state}` : ''
+                } > :not([hidden])~:not([hidden]) {\n\t${property}: ${value}\n}`;
+            }
+            return `.${escapeClass(cls)}${
+                state ? `:${state}` : ''
+            }>:not([hidden])~:not([hidden]){${property}:${value}}`;
+        }
+    },
+    'divide-color': {
+        getRule: function (cls, value, prefix, isDev, state) {
+            // console.log(cls, value, prefix, isDev, state)
+
+            if (isDev) {
+                return `.${escapeClass(cls)}${
+                    state ? `:${state}` : ''
+                } > :not([hidden])~:not([hidden]) {\n\tborder-color: ${value}\n}`;
+            }
+            return `.${escapeClass(cls)}${
+                state ? `:${state}` : ''
+            }>:not([hidden])~:not([hidden]){border-color:${value}}`;
+        }
     }
 };
 
@@ -288,27 +329,51 @@ function createRule(
     isResponsive = false,
     isDev,
 ) {
-    console.log(property)
+    // console.log(cls, property, value, prefix, isImportant, state, isResponsive)
+
+    let ruleForHas = '';
+    if (state === 'has') {
+        ruleForHas = cls.split(':').find((item, index) =>
+            item.startsWith('[') &&
+            item.endsWith(']') &&
+            index !== cls.split(':').length - 1
+        );
+        ruleForHas = ruleForHas ? ruleForHas.slice(1, -1) : '';
+        // console.log('ruleForHas', ruleForHas)
+        // console.log('ruleForHas', escapeClass(ruleForHas))
+    }
+    if (state === 'first') {
+        state = 'first-child'
+    }
+    if (state === 'last') {
+        state = 'last-child'
+    }
+    if (state === 'odd') {
+        state = 'nth-child(odd)'
+    }
+    if (state === 'even') {
+        state = 'nth-child(even)'
+    }
+
     if (uniqueRules[property]) {
-        console.log('q')
         return uniqueRules[property].getRule(cls, value, prefix, isDev, state);
     }
     if (isResponsive) {
         if (isDev) {
-            return `.${escapeClass(cls)}${state ? `:${state}` : ''} {\n ${property
+            return `.${escapeClass(cls)}${state ? `:${state}` : ''}${ruleForHas ? `(${ruleForHas})` : ''} {\n ${property
                 .map((p) => `\t\t${p}: ${value}${isImportant ? ' !important' : ''}`)
                 .join('; \n ')} \n\t}`;
         }
-        return `.${escapeClass(cls)}${state ? `:${state}` : ''} {${property
+        return `.${escapeClass(cls)}${state ? `:${state}` : ''}${ruleForHas ? `(${ruleForHas})` : ''} {${property
             .map((p) => `${p}: ${value}${isImportant ? ' !important' : ''}`)
             .join(';')}}`;
     }
     if (isDev) {
-        return `.${escapeClass(cls)}${state ? `:${state}` : ''} {\n ${property
+        return `.${escapeClass(cls)}${state ? `:${state}` : ''}${ruleForHas ? `(${ruleForHas})` : ''} {\n ${property
             .map((p) => `\t${p}: ${value}${isImportant ? ' !important' : ''}`)
             .join('; \n ')} \n}`;
     }
-    return `.${escapeClass(cls)}${state ? `:${state}` : ''}{${property
+    return `.${escapeClass(cls)}${state ? `:${state}` : ''}${ruleForHas ? `(${ruleForHas})` : ''}{${property
         .map((p) => `${p}:${value}${isImportant ? ' !important' : ''}`)
         .join(';')}}`;
 }
@@ -323,7 +388,7 @@ function normalizeCalcExpression(str) {
     return str.replace(/([^\s])([+\-*/])([^\s])/g, '$1 $2 $3');
 }
 
-const states = ['hover', 'focus', 'before', 'after']
+const states = ['hover', 'focus', 'before', 'after', 'has', 'first', 'last', 'odd', 'even']
 
 module.exports = {
     createRule,

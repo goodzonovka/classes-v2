@@ -7,8 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="../dist/css/classes-v2.css">
+    <style>
+
+    </style>
 </head>
 <body>
-
+    <div>
+        <div class="odd:bg-red-500 even:bg-blue-600">Lorem ipsum dolor sit amet.</div>
+        <div class="odd:bg-red-500 even:bg-blue-600">Lorem ipsum dolor sit amet.</div>
+        <div class="odd:bg-red-500 even:bg-blue-600">Lorem ipsum dolor sit amet.</div>
+        <div class="odd:bg-red-500 even:bg-blue-600">Lorem ipsum dolor sit amet.</div>
+    </div>
 </body>
 </html>

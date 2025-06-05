@@ -9,6 +9,42 @@ const { states } = require('./utils/cssUtils.js');
 
 console.time('⏱️ CSS сгенерирован за')
 
+function extractClassesFromJs(content, configMap) {
+  const classSet = new Set();
+  const regex = /(?:class(?:Name)?|classList\.add)\s*=\s*["'`](.*?)["'`]/gs;
+
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    const classAttr = match[1];
+    const classes = classAttr.trim().split(/\s+/);
+
+    for (let className of classes) {
+      const classNameParts = className.split(':');
+      let parts = [...classNameParts];
+
+      if (parts.length > 1) {
+        parts = parts.filter(part => !responsivePrefixes.includes(part));
+        parts = parts.filter(part => !states.includes(part));
+        if (classNameParts.includes('has') && parts.length === 2 && /^\[.*\]$/.test(parts[0])) {
+          parts = parts.slice(1)
+        }
+      }
+
+      let rawClass = parts.join(':');
+      if (rawClass.startsWith('!')) rawClass = rawClass.slice(1);
+
+      for (const prefix in configMap) {
+        if (rawClass.startsWith(prefix) || rawClass.startsWith(`-${prefix}`)) {
+          classSet.add(className);
+          break;
+        }
+      }
+    }
+  }
+
+  return classSet;
+}
+
 // 🔍 Основная функция — извлекает классы из DOM-дерева
 function extractMatchingClassesFromDomElements(elements, configMap) {
   const classSet = new Set();
@@ -26,6 +62,9 @@ function extractMatchingClassesFromDomElements(elements, configMap) {
       if (parts.length > 1) {
         parts = parts.filter(part => !responsivePrefixes.includes(part));
         parts = parts.filter(part => !states.includes(part));
+        if (classNameParts.includes('has') && parts.length === 2 && /^\[.*\]$/.test(parts[0])) {
+          parts = parts.slice(1)
+        }
       }
 
       let rawClass = parts.join(':');
@@ -44,7 +83,7 @@ function extractMatchingClassesFromDomElements(elements, configMap) {
 }
 
 // 🔄 Рекурсивно собираем HTML-файлы
-const supportedExtensions = ['.html', '.php', '.phtml'];
+const supportedExtensions = ['.html', '.php', '.phtml', '.js'];
 function walkDir(dir, callback) {
   fs.readdirSync(dir).forEach(file => {
     if (file === 'node_modules' || file.startsWith('.')) return;
@@ -65,22 +104,28 @@ function walkDir(dir, callback) {
 let allContent = '';
 const scanPaths = [
   path.resolve(__dirname, 'page-layouts'),
-  // path.resolve(__dirname, '../../application/test'),
 ];
+const classSet = new Set();
+
 for (const dir of scanPaths) {
   walkDir(dir, (filePath) => {
-    // console.log('🔍 Проверка файла:', filePath);
     const fileContent = fs.readFileSync(filePath, 'utf-8');
-    allContent += `<div data-file="${filePath}">\n${fileContent}\n</div>\n`;
+    const ext = path.extname(filePath);
+
+    if (['.html', '.php', '.phtml'].includes(ext)) {
+      const wrappedHtml = `<div data-file="${filePath}">\n${fileContent}\n</div>\n`;
+      const root = parse(wrappedHtml, { lowerCaseTagName: false, script: true, style: true, pre: true });
+      const elementsWithClass = root.querySelectorAll('[class]');
+      const htmlClasses = extractMatchingClassesFromDomElements(elementsWithClass, config);
+      htmlClasses.forEach(cls => classSet.add(cls));
+    }
+
+    if (ext === '.js') {
+      const jsClasses = extractClassesFromJs(fileContent, config);
+      jsClasses.forEach(cls => classSet.add(cls));
+    }
   });
 }
-
-// 🌳 Парсим HTML с помощью node-html-parser
-const root = parse(allContent, { lowerCaseTagName: false, script: true, style: true, pre: true });
-const elementsWithClass = root.querySelectorAll('[class]');
-
-// 🧠 Извлекаем классы и фильтруем по config
-const classSet = extractMatchingClassesFromDomElements(elementsWithClass, config, false);
 
 const isDev = true;
 // 🎨 Генерация переменных и CSS

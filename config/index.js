@@ -1,3 +1,4 @@
+const {tableConfig} = require("./tableConfig");
 const {spacingConfig} = require("./spacingConfig");
 const {textConfig} = require("./textConfig");
 const {flexConfig} = require("./flexConfig");
@@ -16,6 +17,7 @@ const {opacity} = require("./opacity.js");
 const {backgroundConfig} = require("./backgroundConfig");
 
 const config = {
+    ...tableConfig,
     ...spacingConfig,
     ...textConfig,
     ...gridConfig,
