@@ -16,7 +16,7 @@ const specialLogic = {
         'table-footer-group': 'table-footer-group',
         'table-header-group': 'table-header-group',
         'table-row-group': 'table-row-group',
-        'table-row': 'table-row',
+        'table-row-line': 'table-row',
         'flow-root': 'flow-root',
         'grid': 'grid',
         'inline-grid': 'inline-grid',

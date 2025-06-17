@@ -8,15 +8,9 @@
     <title>Document</title>
     <link rel="stylesheet" href="../dist/css/classes-v2.css">
     <style>
-
     </style>
 </head>
 <body>
-    <div>
-        <div class="odd:bg-red-500 even:bg-blue-600">Lorem ipsum dolor sit amet.</div>
-        <div class="odd:bg-red-500 even:bg-blue-600">Lorem ipsum dolor sit amet.</div>
-        <div class="odd:bg-red-500 even:bg-blue-600">Lorem ipsum dolor sit amet.</div>
-        <div class="odd:bg-red-500 even:bg-blue-600">Lorem ipsum dolor sit amet.</div>
-    </div>
+    <div class="text-base leading-normal"></div>
 </body>
 </html>

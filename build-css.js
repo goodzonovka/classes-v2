@@ -127,10 +127,12 @@ for (const dir of scanPaths) {
   });
 }
 
-const isDev = true;
+const isDev = false;
+const isMinCss = false;
+
 // 🎨 Генерация переменных и CSS
-const cssVars = generateCssVars(isDev); // false = production mode
-const css = generateCssFromClasses(classSet, config, isDev);
+const cssVars = generateCssVars(isMinCss); // false = production mode
+const css = generateCssFromClasses(classSet, config, isDev, isMinCss);
 
 // 💾 Сохраняем CSS
 const outDir = path.resolve(__dirname, 'dist/css');

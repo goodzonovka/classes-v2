@@ -1,5 +1,5 @@
 const { responsivePrefixes, responsiveRules, RESPONSIVE_MAP } = require('./responsive.js');
-const { createRule, resolveCssValue, states } = require('./cssUtils.js');
+const { createRule, resolveCssValue, getValue, states } = require('./cssUtils.js');
 const { colorNames, fixedColorValues, getColorInfo } = require('./color.js');
 const { isNumber } = require('./functions.js');
 
@@ -16,6 +16,8 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
   // console.log(Object.keys(config))
   // console.log(Object.values(config))
     for (const className of classSet) {
+        if (/--+/.test(className)) continue; // если больше 1 дефиса подряд в классе
+
         const classNameParts = className.split(':');
         let responsivePrefix = null;
         let state = null;
@@ -58,8 +60,6 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
             if (rawClass.includes('-') && !prefix.endsWith('-') && rawClass !== prefix) {
                 let test = rawClass.split('-').slice(0, -1).join('-')
-                // console.log(rawClass, prefix)
-                // console.log(test, prefix)
                 if (test !== prefix) continue;
             }
 
@@ -98,9 +98,10 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
             const isNegative = rawClass.startsWith(`-${prefix}`);
 
-            let [val, isStaticValue] = resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInfo);
+            // let [val, isStaticValue] = resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInfo);
+            let [val, isStaticValue] = getValue(value, isNegative, propsStr, rawClass, prefix, colorInfo);
 
-            isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, responsivePrefix, isStaticValue, colorInfo)
+            isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, responsivePrefix, isStaticValue, state, colorInfo)
 
             if (val === null || val === undefined) break;
 
@@ -139,14 +140,14 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         const rules = responsiveRules[key];
         if (rules.length) {
             css += !isMinCss ? `\n\n@media (min-width: ${RESPONSIVE_MAP[key]}px) {\n\t${rules.join('\n\t')}\n}` :
-                            `@media (min-width:${RESPONSIVE_MAP[key]}px){${rules.join('')}}`;
+                            `@media(min-width:${RESPONSIVE_MAP[key]}px){${rules.join('')}}`;
         }
     }
 
     return css;
 }
 
-function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey, isStaticValue, colorInfo) {
+function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefixKey, isStaticValue, state, colorInfo) {
     let colorInfoStr = '';
     if (colorInfo) {
         colorInfoStr = '\n\n'
@@ -158,7 +159,7 @@ function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefi
             colorInfoStr += `${key}: ${colorInfo[key]}\n`
         }
     }
-    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsSpecialValue: ${isStaticValue} ${colorInfoStr}\n\n`)
+    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsStaticValue: ${isStaticValue}\nState: ${state} ${colorInfoStr}\n\n`)
 }
 
 module.exports = {

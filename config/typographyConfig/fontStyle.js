@@ -1,6 +1,6 @@
 const fontStyle = {
     'italic': ['font-style'],
-    'non-italic': ['font-style'],
+    'not-italic': ['font-style'],
 };
 
 module.exports = {fontStyle}

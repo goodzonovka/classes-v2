@@ -15,7 +15,7 @@ const display = {
     'table-footer-group': ['display'],
     'table-header-group': ['display'],
     'table-row-group': ['display'],
-    'table-row': ['display'],
+    'table-row-line': ['display'],
     'flow-root': ['display'],
     'grid': ['display'],
     'inline-grid': ['display'],

@@ -11,7 +11,7 @@ const {textTransform} = require("./textTransform.js");
 const {textDecoration} = require("./textDecoration.js");
 const {textOverflow} = require("./textOverflow.js");
 
-const textConfig = {
+const typographyConfig = {
   ...fontWeight,
   ...fontStyle,
   ...fontSize,
@@ -26,4 +26,4 @@ const textConfig = {
   ...textOverflow,
 };
 
-module.exports = {textConfig}
+module.exports = {typographyConfig}
