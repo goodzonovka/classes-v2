@@ -1,0 +1,16 @@
+{
+  "name": "classes-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build-css.js",
+  "scripts": {
+    "build:css": "node build-css.js",
+    "watch:css": "node watch-css.js"
+  },
+  "author": "Fesovets Artem",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "node-html-parser": "^7.0.1"
+  }
+}
