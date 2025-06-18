@@ -1,15 +1,4 @@
-const getColorValue = (colorInfo) => {
-    if (colorInfo.fixedValue) {
-        return `${colorInfo.fixedValue}`;
-    } else {
-        const {opacityValue, rgb} = colorInfo;
-        const rgbStr = Object.values(rgb).join(', ');
-        if (opacityValue) {
-            return `rgba(${rgbStr}, 0.${opacityValue})`;
-        }
-        return `rgba(${rgbStr}, 1)`;
-    }
-};
+const {getColorValue} = require('./functions.js');
 
 const borderRadiusValues = {
     none: '0px',
@@ -23,6 +12,14 @@ const borderRadiusValues = {
     '4xl': '32px',
     full: '9999px',
 };
+
+const ruleForBorderRadius = {
+    acceptableValues: {
+        number: true,
+        valuePx: true,
+    },
+    specialValues: borderRadiusValues
+}
 
 const rulesForPrefixes = {
     'mg-': {
@@ -685,127 +682,27 @@ const rulesForPrefixes = {
     },
     'rounded': {
         acceptableValues: {},
-        specialValues: borderRadiusValues
+        specialValues: {
+            '': '4px',
+        }
     },
-    'rounded-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-t': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-t-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-r': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-r-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-b': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-b-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-l': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-l-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-tl': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-tl-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-tr': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-tr-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-br': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-br-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-bl': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
-    'rounded-bl-': {
-        acceptableValues: {
-            number: true,
-            valuePx: true,
-        },
-        specialValues: borderRadiusValues
-    },
+    'rounded-': ruleForBorderRadius,
+    'rounded-t': ruleForBorderRadius,
+    'rounded-t-': ruleForBorderRadius,
+    'rounded-r': ruleForBorderRadius,
+    'rounded-r-': ruleForBorderRadius,
+    'rounded-b': ruleForBorderRadius,
+    'rounded-b-': ruleForBorderRadius,
+    'rounded-l': ruleForBorderRadius,
+    'rounded-l-': ruleForBorderRadius,
+    'rounded-tl': ruleForBorderRadius,
+    'rounded-tl-': ruleForBorderRadius,
+    'rounded-tr': ruleForBorderRadius,
+    'rounded-tr-': ruleForBorderRadius,
+    'rounded-br': ruleForBorderRadius,
+    'rounded-br-': ruleForBorderRadius,
+    'rounded-bl': ruleForBorderRadius,
+    'rounded-bl-': ruleForBorderRadius,
     'border-spacing-': {
         acceptableValues: {
             number: true,

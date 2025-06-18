@@ -11,6 +11,6 @@
     </style>
 </head>
 <body>
-    <div class="text-base leading-normal"></div>
+    <div class="rounded-none rounded-sm rounded-lg"></div>
 </body>
 </html>

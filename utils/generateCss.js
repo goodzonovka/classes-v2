@@ -1,7 +1,12 @@
-const { responsivePrefixes, responsiveRules, RESPONSIVE_MAP } = require('./responsive.js');
-const { createRule, resolveCssValue, getValue, states } = require('./cssUtils.js');
-const { colorNames, fixedColorValues, getColorInfo } = require('./color.js');
-const { isNumber } = require('./functions.js');
+const { STATES, RESPONSIVE_MAP, RESPONSIVE_PREFIXES } = require('./constants');
+const {createRule} = require('./createCssRule');
+const {getValue} = require('./getCssValue');
+const { colorNames, fixedColorValues, getColorInfo } = require('./color');
+const { isNumber } = require('./functions');
+
+const responsiveRules = Object.fromEntries(
+    RESPONSIVE_PREFIXES.map(key => [key, []])
+);
 
 function generateCssFromClasses(classSet, config, isDev, isMinCss) {
     let css = '';
@@ -9,12 +14,9 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
     const rules = [];
     let translatePropertiesAdded = false;
 
-    const borderSolidRule = !isMinCss ? '* {\n \tborder: 0 solid \n}' : '*{border:0 solid}'
+    const borderSolidRule = !isMinCss ? '* {\n \tborder: 0 solid\n}' : '*{border:0 solid}'
     rules.push(borderSolidRule)
 
-
-  // console.log(Object.keys(config))
-  // console.log(Object.values(config))
     for (const className of classSet) {
         if (/--+/.test(className)) continue; // если больше 1 дефиса подряд в классе
 
@@ -22,10 +24,10 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         let responsivePrefix = null;
         let state = null;
 
-        if (responsivePrefixes.includes(classNameParts[0])) {
+        if (RESPONSIVE_PREFIXES.includes(classNameParts[0])) {
             responsivePrefix = classNameParts[0];
         }
-        responsivePrefixes.forEach(prefix => {
+        RESPONSIVE_PREFIXES.forEach(prefix => {
             const index = classNameParts.indexOf(prefix);
             if (index !== -1) {
                 responsivePrefix = classNameParts.splice(index, 1);
@@ -33,7 +35,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         })
 
 
-        states.forEach(el => {
+        STATES.forEach(el => {
             const index = classNameParts.indexOf(el);
             if (index !== -1) {
                 state = classNameParts.splice(index, 1).join();
@@ -98,7 +100,6 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
             const isNegative = rawClass.startsWith(`-${prefix}`);
 
-            // let [val, isStaticValue] = resolveCssValue(value, isNegative, propsStr, rawClass, prefix, colorInfo);
             let [val, isStaticValue] = getValue(value, isNegative, propsStr, rawClass, prefix, colorInfo);
 
             isDev && debug(className, rawClass, prefix, value, props, isNegative, isImportant, responsivePrefix, isStaticValue, state, colorInfo)
@@ -128,7 +129,6 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
             } else {
                 rules.push(rule)
             }
-            break;
         }
     }
 
@@ -159,7 +159,7 @@ function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefi
             colorInfoStr += `${key}: ${colorInfo[key]}\n`
         }
     }
-    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsStaticValue: ${isStaticValue}\nState: ${state} ${colorInfoStr}\n\n`)
+    console.log(`Debug:\n\nClassName: ${cls}\nRawClass: ${rawCls}\nPrefix: ${prefix}\nValue: ${value}\nProps: ${props}\nIsNegative: ${isNegative}\nIsImportant: ${isImportant}\nPrefixKey: ${prefixKey}\nIsStaticValue: ${!!isStaticValue}\nState: ${state} ${colorInfoStr}\n\n`)
 }
 
 module.exports = {

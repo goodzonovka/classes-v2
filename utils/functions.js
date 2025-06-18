@@ -1,3 +1,31 @@
+const escapeClass = cls => {
+    return cls
+        .replace(/\\/g, '\\\\')
+        .replace(/:/g, '\\:')
+        .replace(/\./g, '\\.')
+        .replace(/\//g, '\\/')
+        .replace(/\[/g, '\\[')
+        .replace(/\]/g, '\\]')
+        .replace(/\*/g, '\\*')
+        .replace(/'/g, "\\'")
+        .replace(/!/g, '\\!')
+        .replace(/,/g, '\\,')
+        .replace(/\(/g, '\\(')
+        .replace(/\)/g, '\\)')
+        .replace(/\%/g, '\\%')
+        .replace(/\>/g, '\\>');
+}
+
+const normalizeCalcExpression = str => {
+    // Добавляем пробелы вокруг операторов, только если их нет
+    return str.replace(/([^\s])([+\-*/])([^\s])/g, '$1 $2 $3');
+}
+
+const isValidCalcExpression = str => {
+    const regex = /^calc\((?:[a-z0-9.%]+(?:[+\-*/][a-z0-9.%]+)+)\)$/i;
+    return regex.test(str);
+}
+
 const isNumeric = value =>
     !isNaN(parseFloat(value)) &&
     isFinite(value) &&
@@ -21,11 +49,28 @@ const hexToRgb = (hex) => {
     const g = (num >> 8) & 255;
     const b = num & 255;
 
-    return { r, g, b };
+    return {r, g, b};
+};
+
+const getColorValue = (colorInfo) => {
+    if (colorInfo.fixedValue) {
+        return `${colorInfo.fixedValue}`;
+    } else {
+        const {opacityValue, rgb} = colorInfo;
+        const rgbStr = Object.values(rgb).join(', ');
+        if (opacityValue) {
+            return `rgba(${rgbStr}, 0.${opacityValue})`;
+        }
+        return `rgba(${rgbStr}, 1)`;
+    }
 };
 
 module.exports = {
-  hexToRgb,
-  isNumeric,
-  isNumber,
+    escapeClass,
+    normalizeCalcExpression,
+    isValidCalcExpression,
+    hexToRgb,
+    isNumeric,
+    isNumber,
+    getColorValue,
 };

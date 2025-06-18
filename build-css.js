@@ -4,8 +4,7 @@ const { parse } = require('node-html-parser');
 const { generateCssFromClasses } = require('./utils/generateCss.js');
 const config = require('./config/index.js');
 const { generateCssVars } = require('./utils/color.js');
-const {responsivePrefixes} = require('./utils/responsive.js');
-const { states } = require('./utils/cssUtils.js');
+const { STATES, RESPONSIVE_PREFIXES } = require('./utils/constants.js');
 
 console.time('⏱️ CSS сгенерирован за')
 
@@ -23,8 +22,8 @@ function extractClassesFromJs(content, configMap) {
       let parts = [...classNameParts];
 
       if (parts.length > 1) {
-        parts = parts.filter(part => !responsivePrefixes.includes(part));
-        parts = parts.filter(part => !states.includes(part));
+        parts = parts.filter(part => !RESPONSIVE_PREFIXES.includes(part));
+        parts = parts.filter(part => !STATES.includes(part));
         if (classNameParts.includes('has') && parts.length === 2 && /^\[.*\]$/.test(parts[0])) {
           parts = parts.slice(1)
         }
@@ -60,8 +59,8 @@ function extractMatchingClassesFromDomElements(elements, configMap) {
       let parts = [...classNameParts];
 
       if (parts.length > 1) {
-        parts = parts.filter(part => !responsivePrefixes.includes(part));
-        parts = parts.filter(part => !states.includes(part));
+        parts = parts.filter(part => !RESPONSIVE_PREFIXES.includes(part));
+        parts = parts.filter(part => !STATES.includes(part));
         if (classNameParts.includes('has') && parts.length === 2 && /^\[.*\]$/.test(parts[0])) {
           parts = parts.slice(1)
         }
@@ -127,7 +126,7 @@ for (const dir of scanPaths) {
   });
 }
 
-const isDev = false;
+const isDev = true;
 const isMinCss = false;
 
 // 🎨 Генерация переменных и CSS
