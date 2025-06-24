@@ -7,6 +7,7 @@ const {objectPosition} = require("./objectPosition.js");
 const {offset} = require("./offset.js");
 const {zIndex} = require("./zIndex.js");
 const {visibility} = require("./visibility.js");
+const {aspectRatio} = require("./aspectRatio.js");
 
 const layoutConfig = {
     ...display,
@@ -18,6 +19,7 @@ const layoutConfig = {
     ...offset,
     ...zIndex,
     ...visibility,
+    ...aspectRatio,
 };
 
 

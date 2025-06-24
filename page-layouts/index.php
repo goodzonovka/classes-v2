@@ -11,6 +11,7 @@
     </style>
 </head>
 <body>
-    <div class="rounded-none rounded-sm rounded-lg"></div>
+    <div class="leading-2.25"></div>
+    <div class="leading-1.5"></div>
 </body>
 </html>

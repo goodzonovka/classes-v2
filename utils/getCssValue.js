@@ -25,10 +25,9 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         acceptedValues.minValue > value
     ) return [null, null]
 
-
     if (acceptedValues.auto && value === 'auto') { // can be auto
         result = 'auto';
-    } else if (acceptedValues.valuePx && value === 'px') { // can be px
+    } else if ((acceptedValues.valuePx || acceptedValues.staticPx) && value === 'px') { // can be px
         result = '1px';
         if (acceptedValues.negative && isNegative) {  // can be negative px
             result = '-' + result;
@@ -65,21 +64,23 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         }
     } else if (acceptedValues.valuesContent && getValuesContent[value]) {
         result = getValuesContent[value]
-    } else if (acceptedValues.valueCalc && /^\[.*\]$/.test(value)) {
-        value = value.slice(1, -1);
-        if (isValidCalcExpression(value)) {
-            result = normalizeCalcExpression(value);
+    } else if ((acceptedValues.removeBrackets || acceptedValues.valueCalc) && /^\[.*\]$/.test(value)) {
+        result = value.slice(1, -1);
+        if (isValidCalcExpression(result) && acceptedValues.valueCalc) {
+            result = normalizeCalcExpression(result);
         }
     }
 
+    console.log('result', result);
+
     if (specialValues && specialValues[value] && !isNegative) {
         result = specialValues[value];
-    } else if (rulesForClass.uniqueResult && (result || colorInfo)) {
-        result = rulesForClass.uniqueResult(result || colorInfo);
+    } else if (rulesForClass.uniqueResult && (result || colorInfo || value)) {
+        result = rulesForClass.uniqueResult(result || colorInfo || value);
     }
 
-    // console.log('result', result)
-    // console.log('value', value)
+    console.log('result', result)
+    console.log('value', value)
 
     return [result, isStaticValue];
 }

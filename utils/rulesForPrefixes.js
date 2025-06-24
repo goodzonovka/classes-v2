@@ -269,6 +269,7 @@ const rulesForPrefixes = {
             number: true,
             valuePx: true,
             valueCalc: true,
+             negative: true,
         }
     },
     'space-y-reverse-': {
@@ -276,6 +277,7 @@ const rulesForPrefixes = {
             number: true,
             valuePx: true,
             valueCalc: true,
+             negative: true,
         }
     },
     'space-x-': {
@@ -283,6 +285,7 @@ const rulesForPrefixes = {
             number: true,
             valuePx: true,
             valueCalc: true,
+            negative: true,
         }
     },
     'space-y-': {
@@ -290,6 +293,7 @@ const rulesForPrefixes = {
             number: true,
             valuePx: true,
             valueCalc: true,
+            negative: true,
         }
     },
     'opacity-': {
@@ -316,6 +320,7 @@ const rulesForPrefixes = {
     },
     'min-w-': {
         acceptableValues: {
+            auto: true,
             number: true,
             valuePx: true,
             valuePercent: true,
@@ -357,6 +362,7 @@ const rulesForPrefixes = {
     },
     'min-h-': {
         acceptableValues: {
+            auto: true,
             number: true,
             valuePx: true,
             valuePercent: true,
@@ -432,6 +438,21 @@ const rulesForPrefixes = {
         acceptableValues: {
             auto: true,
             numeric: true,
+        },
+        specialValues: {
+            '3xs': '256px',
+            '2xs': '288px',
+            'xs': '320px',
+            'sm': '384px',
+            'md': '448px',
+            'lg': '512px',
+            'xl': '576px',
+            '2xl': '672px',
+            '3xl': '786px',
+            '4xl': '896px',
+            '5xl': '1024px',
+            '6xl': '1152px',
+            '7xl': '1280px',
         }
     },
     'col-span-': {
@@ -587,8 +608,16 @@ const rulesForPrefixes = {
         uniqueResult: getColorValue
     },
     'text-': {
-        acceptableValues: {},
-        uniqueResult: getColorValue
+        acceptableValues: {
+            number: true,
+            valuePx: true,
+        },
+        uniqueResult: function (value) {
+            if (typeof value === 'object') {
+                return getColorValue(value);
+            }
+            return value;
+        }
     },
     'border': {
         acceptableValues: {},
@@ -717,6 +746,24 @@ const rulesForPrefixes = {
         uniqueResult: function (value) {
             return `rotate(${value}deg)`
         }
+    },
+    'content-': {
+        acceptableValues: {
+            removeBrackets: true,
+        },
+    },
+    'aspect-': {
+        acceptableValues: {
+            auto: true,
+        },
+        specialValues: {
+            'square': '1 / 1',
+            'video': '16 / 9',
+        },
+        uniqueResult: function (value) {
+            return /^\d+\/\d+$/.test(value) ? value.split('/').join(' / ') : null;
+        }
+
     }
 }
 
