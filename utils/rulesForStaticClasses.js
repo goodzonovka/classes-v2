@@ -207,14 +207,6 @@ const rulesForStaticClasses = {
         'font-extrabold': '800',
         'font-black': '900',
     },
-    'letter-spacing': {
-        'tracking-tighter': '-0.05em',
-        'tracking-tight': '-0.025em',
-        'tracking-normal': '0em',
-        'tracking-wide': '0.025em',
-        'tracking-wider': '0.05em',
-        'tracking-widest': '0.1em',
-    },
     'text-align': {
         'text-left': 'left',
         'text-center': 'center',
@@ -312,6 +304,21 @@ const rulesForStaticClasses = {
         'cursor-zoom-in': 'zoom-in',
         'cursor-zoom-out': 'zoom-out',
     },
+    'word-break': {
+        'break-normal': 'normal',
+        'break-all': 'break-all',
+        'break-keep': 'keep-all',
+    },
+    'vertical-align': {
+        'align-baseline': 'baseline',
+        'align-top': 'top',
+        'align-middle': 'middle',
+        'align-bottom': 'bottom',
+        'align-text-top': 'text-top',
+        'align-text-bottom': 'text-bottom',
+        'align-sub': 'sub',
+        'align-super': 'super',
+    }
 }
 
 module.exports = {

@@ -518,6 +518,21 @@ const rulesForPrefixes = {
             'loose': 2,
         }
     },
+    'tracking-': {
+        acceptableValues: {
+            number: true,
+            staticEm: true,
+            negative: true,
+        },
+        specialValues: {
+            'tighter': '-0.05em',
+            'tight': '-0.025em',
+            'normal': '0em',
+            'wide': '0.025em',
+            'wider': '0.05em',
+            'widest': '0.1em',
+        }
+    },
     'line-clamp-': {
         acceptableValues: {
             numeric: true,
@@ -619,12 +634,6 @@ const rulesForPrefixes = {
             return value;
         }
     },
-    'border': {
-        acceptableValues: {},
-        specialValues: {
-            '': '1px',
-        }
-    },
     'border-x': {
         acceptableValues: {},
         specialValues: {
@@ -697,6 +706,12 @@ const rulesForPrefixes = {
             staticPx: true,
         },
     },
+    'border': {
+        acceptableValues: {},
+        specialValues: {
+            '': '1px',
+        }
+    },
     'border-': {
         acceptableValues: {
             number: true,
@@ -763,7 +778,31 @@ const rulesForPrefixes = {
         uniqueResult: function (value) {
             return /^\d+\/\d+$/.test(value) ? value.split('/').join(' / ') : null;
         }
-
+    },
+    'backdrop-blur': {
+        acceptableValues: {},
+        specialValues: {
+            '': 'blur(8px)',
+        }
+    },
+    'backdrop-blur-': {
+        acceptableValues: {
+            number: true,
+            valuePx: true,
+            noResultError: true,
+        },
+        specialValues: {
+            'none': 'blur(0)',
+            'sm': 'blur(4px)',
+            'md': 'blur(12px)',
+            'lg': 'blur(16px)',
+            'xl': 'blur(24px)',
+            '2xl': 'blur(40px)',
+            '3xl': 'blur(64px)',
+        },
+        uniqueResult: function (value) {
+            return `blur(${value})`
+        }
     }
 }
 

@@ -8,10 +8,19 @@
     <title>Document</title>
     <link rel="stylesheet" href="../dist/css/classes-v2.css">
     <style>
+       /* .mr-5 {
+            margin-right: 20px;
+        }
+        .rtl\:mr-10:where([dir=rtl], [dir=rtl] *) {
+            margin-right: 40px;
+        }*/
     </style>
 </head>
-<body>
-    <div class="leading-2.25"></div>
-    <div class="leading-1.5"></div>
+<body dir="rtl">
+
+    <div class="rtl:first:mgr-5">Lorem ipsum dolor sit amet.</div>
+    <div class="rtl:first:mgr-5">Lorem ipsum dolor sit amet.</div>
+    <div class="rtl:first:mgr-5">Lorem ipsum dolor sit amet.</div>
+
 </body>
 </html>

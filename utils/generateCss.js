@@ -22,7 +22,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
         const classNameParts = className.split(':');
         let responsivePrefix = null;
-        let state = null;
+        let state = [];
 
         if (RESPONSIVE_PREFIXES.includes(classNameParts[0])) {
             responsivePrefix = classNameParts[0];
@@ -38,9 +38,10 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         STATES.forEach(el => {
             const index = classNameParts.indexOf(el);
             if (index !== -1) {
-                state = classNameParts.splice(index, 1).join();
+                state.push(classNameParts.splice(index, 1).join())
             }
         })
+
 
         let rawClass = classNameParts.join();
 
@@ -48,7 +49,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
         rawClass = isImportant ? rawClass.slice(1) : rawClass;
 
-        if (state === 'has') {
+        if (state.includes('has')) {
             const arrRawClass = rawClass.split(',');
             if (arrRawClass.length === 2 && /^\[.*\]$/.test(arrRawClass[0])) {
                 rawClass = arrRawClass[1]
@@ -129,6 +130,8 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
             } else {
                 rules.push(rule)
             }
+
+            break;
         }
     }
 

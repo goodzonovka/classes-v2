@@ -144,46 +144,53 @@ function createRule(
     // console.log(cls, property, value, prefix, isImportant, state, isResponsive)
 
     let ruleForHas = '';
-    if (state === 'has') {
-        ruleForHas = cls.split(':').find((item, index) =>
-            item.startsWith('[') &&
-            item.endsWith(']') &&
-            index !== cls.split(':').length - 1
-        );
-        ruleForHas = ruleForHas ? ruleForHas.slice(1, -1) : '';
+    let stateStr = ''
+
+    for (const i of state) {
+        if (i === 'has') {
+            ruleForHas = cls.split(':').find((item, index) =>
+                item.startsWith('[') &&
+                item.endsWith(']') &&
+                index !== cls.split(':').length - 1
+            );
+            ruleForHas = ruleForHas ? ruleForHas.slice(1, -1) : '';
+            stateStr += `:has(${ruleForHas})`
+        } else if (i === 'first') {
+            stateStr += ':first-child'
+        } else if (i === 'last') {
+            stateStr += ':last-child'
+        } else if (i === 'odd') {
+            stateStr += ':nth-child(odd)'
+        } else if (i === 'even') {
+            stateStr += ':nth-child(even)'
+        } else if (i ==='rtl') {
+            stateStr += ':where([dir=rtl], [dir=rtl] *)'
+        } else {
+            stateStr += `:${i}`
+        }
     }
-    if (state === 'first') {
-        state = 'first-child'
-    }
-    if (state === 'last') {
-        state = 'last-child'
-    }
-    if (state === 'odd') {
-        state = 'nth-child(odd)'
-    }
-    if (state === 'even') {
-        state = 'nth-child(even)'
-    }
+
+    // console.log('stateStr', stateStr)
 
     if (uniqueRules[property]) {
         return uniqueRules[property].getRule(cls, value, prefix, isMinCss, state, isResponsive);
     }
     if (isResponsive) {
         if (!isMinCss) {
-            return `.${escapeClass(cls)}${state ? `:${state}` : ''}${ruleForHas ? `(${ruleForHas})` : ''} {\n ${property
+            return `.${escapeClass(cls)}${stateStr ? `${stateStr}` : ''} {\n ${property
                 .map((p) => `\t\t${p}: ${value}${isImportant ? ' !important' : ''}`)
                 .join('; \n ')} \n\t}`;
         }
-        return `.${escapeClass(cls)}${state ? `:${state}` : ''}${ruleForHas ? `(${ruleForHas})` : ''} {${property
+        return `.${escapeClass(cls)}${stateStr ? `${stateStr}` : ''} {${property
             .map((p) => `${p}: ${value}${isImportant ? ' !important' : ''}`)
             .join(';')}}`;
     }
     if (!isMinCss) {
-        return `.${escapeClass(cls)}${state ? `:${state}` : ''}${ruleForHas ? `(${ruleForHas})` : ''} {\n ${property
+        return `.${escapeClass(cls)}${stateStr ? `${stateStr}` : ''} {\n ${property
             .map((p) => `\t${p}: ${value}${isImportant ? ' !important' : ''}`)
             .join('; \n ')}\n}`;
     }
-    return `.${escapeClass(cls)}${state ? `:${state}` : ''}${ruleForHas ? `(${ruleForHas})` : ''}{${property
+    return `.${escapeClass(cls)}${stateStr ? `${stateStr}` : ''}{${property
         .map((p) => `${p}:${value}${isImportant ? ' !important' : ''}`)
         .join(';')}}`;
 }

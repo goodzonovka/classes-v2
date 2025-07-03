@@ -22,7 +22,9 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         !acceptedValues.negative && isNegative ||
         value === 'auto' && isNegative ||
         value === '0' && isNegative ||
-        acceptedValues.minValue > value
+        acceptedValues.minValue > value ||
+        !acceptedValues.valuePercent && /^\d+\/\d+$/.test(value) ||
+        !acceptedValues.number && isNumber(value)
     ) return [null, null]
 
     if (acceptedValues.auto && value === 'auto') { // can be auto
@@ -43,6 +45,8 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
             result = `${value * 4}px`;
         } else if (acceptedValues.staticPx) {
             result = `${value}px`;
+        } else if (acceptedValues.staticEm) {
+            result = `${value}em`
         } else {
             result = value;
         }
@@ -71,16 +75,18 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         }
     }
 
-    console.log('result', result);
+    // console.log('result', result);
+    // console.log('q1')
+    // console.log(acceptedValues.noResultError && !result)
 
     if (specialValues && specialValues[value] && !isNegative) {
         result = specialValues[value];
-    } else if (rulesForClass.uniqueResult && (result || colorInfo || value)) {
+    } else if (rulesForClass.uniqueResult && (result || colorInfo || value) && !(acceptedValues.noResultError && !result)) {
         result = rulesForClass.uniqueResult(result || colorInfo || value);
     }
 
-    console.log('result', result)
-    console.log('value', value)
+    // console.log('result', result)
+    // console.log('value', value)
 
     return [result, isStaticValue];
 }

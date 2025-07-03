@@ -11,6 +11,7 @@ const {transformConfig} = require("./transformConfig");
 const {backgroundConfig} = require("./backgroundConfig");
 const {interactivityConfig} = require("./interactivityConfig");
 const {effectsConfig} = require("./effectsConfig");
+const {filterConfig} = require("./filterConfig");
 
 const config = {
     ...tableConfig,
@@ -25,6 +26,7 @@ const config = {
     ...transformConfig,
     ...interactivityConfig,
     ...effectsConfig,
+    ...filterConfig,
     ...other,
 };
 
