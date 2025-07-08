@@ -18,13 +18,16 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
     const acceptedValues = rulesForClass.acceptableValues;
     const specialValues = rulesForClass.specialValues;
 
+    /*console.log('specialValues', specialValues)
+    console.log(!acceptedValues.valuePercent && /^\d+\/\d+$/.test(value))
+    console.log(!acceptedValues.number && isNumber(value))*/
     if (
         !acceptedValues.negative && isNegative ||
         value === 'auto' && isNegative ||
         value === '0' && isNegative ||
         acceptedValues.minValue > value ||
-        !acceptedValues.valuePercent && /^\d+\/\d+$/.test(value) ||
-        !acceptedValues.number && isNumber(value)
+        !acceptedValues.valuePercent && /^\d+\/\d+$/.test(value)
+        // || acceptedValues.number && !isNumber(value) && !(specialValues && specialValues[value])
     ) return [null, null]
 
     if (acceptedValues.auto && value === 'auto') { // can be auto
@@ -41,7 +44,9 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
             result = '-' + result;
         }
     } else if (acceptedValues.number && isNumber(value)) { // can be number
-        if (acceptedValues.valuePx) {
+        if (value === '0') {
+            result = 0;
+        } else if (acceptedValues.valuePx) {
             result = `${value * 4}px`;
         } else if (acceptedValues.staticPx) {
             result = `${value}px`;
@@ -73,20 +78,20 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         if (isValidCalcExpression(result) && acceptedValues.valueCalc) {
             result = normalizeCalcExpression(result);
         }
-    }
-
-    // console.log('result', result);
-    // console.log('q1')
-    // console.log(acceptedValues.noResultError && !result)
-
-    if (specialValues && specialValues[value] && !isNegative) {
-        result = specialValues[value];
-    } else if (rulesForClass.uniqueResult && (result || colorInfo || value) && !(acceptedValues.noResultError && !result)) {
-        result = rulesForClass.uniqueResult(result || colorInfo || value);
+    } else if (colorInfo) {
+        result = colorInfo;
     }
 
     // console.log('result', result)
-    // console.log('value', value)
+
+    if (specialValues && specialValues[value] && !isNegative) {
+        result = specialValues[value];
+    } else if (rulesForClass.uniqueResult && (result || value) && !(acceptedValues.noResultError && !result)) {
+        result = rulesForClass.uniqueResult(result || value);
+    }
+
+/*    console.log('result', result)
+    console.log('value', value)*/
 
     return [result, isStaticValue];
 }

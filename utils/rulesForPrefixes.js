@@ -1,4 +1,4 @@
-const {getColorValue} = require('./functions.js');
+const {getColorValue, isNumber} = require('./functions.js');
 
 const borderRadiusValues = {
     none: '0px',
@@ -716,6 +716,7 @@ const rulesForPrefixes = {
         acceptableValues: {
             number: true,
             staticPx: true,
+            noResultError: true,
         },
         uniqueResult: function (value) {
             if (typeof value === 'object') {

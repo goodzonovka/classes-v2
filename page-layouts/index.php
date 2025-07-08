@@ -16,11 +16,11 @@
         }*/
     </style>
 </head>
-<body dir="rtl">
+<body>
+<input type="text" class="disabled:bg-gray-125" disabled>
 
-    <div class="rtl:first:mgr-5">Lorem ipsum dolor sit amet.</div>
-    <div class="rtl:first:mgr-5">Lorem ipsum dolor sit amet.</div>
-    <div class="rtl:first:mgr-5">Lorem ipsum dolor sit amet.</div>
+    <div class="disabled:cursor-default">Lorem ipsum dolor sit amet.</div>
 
+    <div class="hover:shadow-none">Lorem ipsum dolor sit amet.</div>
 </body>
 </html>

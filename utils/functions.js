@@ -17,9 +17,8 @@ const escapeClass = cls => {
 }
 
 const normalizeCalcExpression = str => {
-    // Добавляем пробелы вокруг операторов, только если их нет
-    return str.replace(/([^\s])([+\-*/])([^\s])/g, '$1 $2 $3');
-}
+    return str.replace(/([+\-*/])/g, match => ` ${match} `).replace(/\s+/g, ' ').trim();
+};
 
 const isValidCalcExpression = str => {
     const regex = /^calc\((?:[a-z0-9.%]+(?:[+\-*/][a-z0-9.%]+)+)\)$/i;

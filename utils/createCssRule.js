@@ -54,16 +54,16 @@ const uniqueRules = {
             const directionVariable = prefix === 'translate-x-' ? '--cl-translate-x' : '--cl-translate-y';
             if (isResponsive && !isMinCss) {
                 return `.${escapeClass(cls)}${
-                    state ? `:${state}` : ''
+                    state ? `${state}` : ''
                 } {\n\t\t${directionVariable}: ${value};\n\t\ttranslate: var(--cl-translate-x) var(--cl-translate-y)\n\t}`;
             }
             if (!isMinCss) {
                 return `.${escapeClass(cls)}${
-                    state ? `:${state}` : ''
+                    state ? `${state}` : ''
                 } {\n\t${directionVariable}: ${value};\n\ttranslate: var(--cl-translate-x) var(--cl-translate-y)\n}`;
             }
             return `.${escapeClass(cls)}${
-                state ? `:${state}` : ''
+                state ? `${state}` : ''
             }{${directionVariable}:${value};translate:var(--cl-translate-x) var(--cl-translate-y)}`;
         },
     },
@@ -78,17 +78,17 @@ const uniqueRules = {
 
             if (isResponsive && !isMinCss) {
                 return `.${escapeClass(cls)}${
-                    state ? `:${state}` : ''
+                    state ? `${state}` : ''
                 } > :not([hidden])~:not([hidden]) {\n\t\t${property}: ${value}\n\t}`;
             }
 
             if (!isMinCss) {
                 return `.${escapeClass(cls)}${
-                    state ? `:${state}` : ''
+                    state ? `${state}` : ''
                 } > :not([hidden])~:not([hidden]) {\n\t${property}: ${value}\n}`;
             }
             return `.${escapeClass(cls)}${
-                state ? `:${state}` : ''
+                state ? `${state}` : ''
             }>:not([hidden])~:not([hidden]){${property}:${value}}`;
         }
     },
@@ -103,17 +103,17 @@ const uniqueRules = {
 
             if (isResponsive && !isMinCss) {
                 return `.${escapeClass(cls)}${
-                    state ? `:${state}` : ''
+                    state ? `${state}` : ''
                 } > :not([hidden])~:not([hidden]) {\n\t\t${property}: ${value}\n\t}`;
             }
 
             if (!isMinCss) {
                 return `.${escapeClass(cls)}${
-                    state ? `:${state}` : ''
+                    state ? `${state}` : ''
                 } > :not([hidden])~:not([hidden]) {\n\t${property}: ${value}\n}`;
             }
             return `.${escapeClass(cls)}${
-                state ? `:${state}` : ''
+                state ? `${state}` : ''
             }>:not([hidden])~:not([hidden]){${property}:${value}}`;
         }
     },
@@ -121,11 +121,11 @@ const uniqueRules = {
         getRule: function (cls, value, prefix, isMinCss, state) {
             if (!isMinCss) {
                 return `.${escapeClass(cls)}${
-                    state ? `:${state}` : ''
+                    state ? `${state}` : ''
                 } > :not([hidden])~:not([hidden]) {\n\tborder-color: ${value}\n}`;
             }
             return `.${escapeClass(cls)}${
-                state ? `:${state}` : ''
+                state ? `${state}` : ''
             }>:not([hidden])~:not([hidden]){border-color:${value}}`;
         }
     }
@@ -173,7 +173,7 @@ function createRule(
     // console.log('stateStr', stateStr)
 
     if (uniqueRules[property]) {
-        return uniqueRules[property].getRule(cls, value, prefix, isMinCss, state, isResponsive);
+        return uniqueRules[property].getRule(cls, value, prefix, isMinCss, stateStr, isResponsive);
     }
     if (isResponsive) {
         if (!isMinCss) {
