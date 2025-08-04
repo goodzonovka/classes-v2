@@ -7,20 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="../dist/css/classes-v2.css">
-    <style>
-       /* .mr-5 {
-            margin-right: 20px;
-        }
-        .rtl\:mr-10:where([dir=rtl], [dir=rtl] *) {
-            margin-right: 40px;
-        }*/
-    </style>
 </head>
 <body>
-<input type="text" class="disabled:bg-gray-125" disabled>
-
-    <div class="disabled:cursor-default">Lorem ipsum dolor sit amet.</div>
-
-    <div class="hover:shadow-none">Lorem ipsum dolor sit amet.</div>
+    <div class="lg:hover:!bg-blue-600"></div>
 </body>
 </html>

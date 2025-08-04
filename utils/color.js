@@ -1,4 +1,4 @@
-const {hexToRgb, isNumeric} = require("./functions.js");
+const {hexToRgb, isStrictInteger} = require("./functions.js");
 const {COLORS} = require("./constants.js");
 
 const fixedColorValues = ['inherit', 'current', 'transparent'];
@@ -44,9 +44,11 @@ function getColorInfo(fullValue) {
 
     if (withOpacity) {
         const valueParts = fullValue.split('-')
+        console.log(valueParts)
         value = valueParts.slice(0, -2).join('-');
-        opacityValue = isNumeric(valueParts[valueParts.length - 1]) ? valueParts[valueParts.length - 1] : null;
-
+        console.log(valueParts[valueParts.length - 1])
+        opacityValue = isStrictInteger(valueParts[valueParts.length - 1]) ? valueParts[valueParts.length - 1] : null;
+        console.log(opacityValue)
         if (!opacityValue) return;
     }
 
@@ -56,7 +58,7 @@ function getColorInfo(fullValue) {
         colorName = fullValue;
     } else {
         const valuePartsNoOpacity = value.split('-');
-        shade = isNumeric(valuePartsNoOpacity[valuePartsNoOpacity.length - 1]) ? valuePartsNoOpacity[valuePartsNoOpacity.length - 1] : null;
+        shade = isStrictInteger(valuePartsNoOpacity[valuePartsNoOpacity.length - 1]) ? valuePartsNoOpacity[valuePartsNoOpacity.length - 1] : null;
         colorName = shade ? valuePartsNoOpacity.slice(0, -1).join('-') : valuePartsNoOpacity.join('-');
     }
 

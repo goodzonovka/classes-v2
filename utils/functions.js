@@ -25,13 +25,12 @@ const isValidCalcExpression = str => {
     return regex.test(str);
 }
 
-const isNumeric = value =>
-    !isNaN(parseFloat(value)) &&
-    isFinite(value) &&
-    Number.isInteger(Number(value));
+const isStrictInteger = value => /^(0|[1-9]\d*)$/.test(value);
 
-const isNumber = value =>
-    !isNaN(value) && isFinite(parseFloat(value));
+const isValidCssNumber = (value) => {
+    return /^-?(0|[1-9]\d*)(\.\d+)?$/.test(value);
+};
+
 
 const hexToRgb = (hex) => {
     // Удаляем # если есть
@@ -55,10 +54,15 @@ const getColorValue = (colorInfo) => {
     if (colorInfo.fixedValue) {
         return `${colorInfo.fixedValue}`;
     } else {
-        const {opacityValue, rgb} = colorInfo;
+        let {opacityValue, rgb} = colorInfo;
         const rgbStr = Object.values(rgb).join(', ');
-        if (opacityValue) {
-            return `rgba(${rgbStr}, 0.${opacityValue})`;
+        if (opacityValue && +opacityValue > 1 && +opacityValue < 100) {
+            if (opacityValue < 10) {
+                opacityValue = `0.0${opacityValue}`
+            } else if (opacityValue > 9 && opacityValue < 100) {
+                opacityValue = `0.${opacityValue}`
+            }
+            return `rgba(${rgbStr}, ${opacityValue})`;
         }
         return `rgba(${rgbStr}, 1)`;
     }
@@ -69,7 +73,7 @@ module.exports = {
     normalizeCalcExpression,
     isValidCalcExpression,
     hexToRgb,
-    isNumeric,
-    isNumber,
+    isStrictInteger,
+    isValidCssNumber,
     getColorValue,
 };

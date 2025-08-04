@@ -34,6 +34,35 @@ const uniqueRules = {
             )}{overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:${value}}`;
         },
     },
+    'transition-property': {
+        getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
+            if (value === 'none') {
+                if (isResponsive && !isMinCss) {
+                    return `.${escapeClass(
+                        cls,
+                    )} {\n\t\ttransition-property: ${value}\n\t}`;
+                }
+                if (!isMinCss) {
+                    return `.${escapeClass(
+                        cls,
+                    )} {\n\ttransition-property: ${value}\n}`;
+                }
+                return `.${escapeClass(cls)}{transition-property:${value}}`;
+            }
+
+            if (isResponsive && !isMinCss) {
+                return `.${escapeClass(
+                    cls,
+                )} {\n\t\ttransition-property: ${value};\n\t\ttransition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n\t\ttransition-duration: 150ms\n\t}`;
+            }
+            if (!isMinCss) {
+                return `.${escapeClass(
+                    cls,
+                )} {\n\ttransition-property: ${value};\n\ttransition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n\ttransition-duration: 150ms\n}`;
+            }
+            return `.${escapeClass(cls)}{transition-property:${value};transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}`;
+        }
+    },
     truncate: {
         getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
             if (isResponsive && !isMinCss) {
@@ -49,7 +78,59 @@ const uniqueRules = {
             return `.${escapeClass(cls)}{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}`;
         },
     },
-    translate: {
+    transform: {
+        getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
+            // console.log(cls, value, prefix, isMinCss, state, isResponsive)
+
+
+            if (prefix === 'transform-') {
+                if (isResponsive && !isMinCss) {
+                    return `.${escapeClass(cls)}${
+                        state ? `${state}` : ''
+                    } {\n\t\ttransform: none\n\t}`;
+                }
+                if (!isMinCss) {
+                    return `.${escapeClass(cls)}${
+                        state ? `${state}` : ''
+                    } {\n\ttransform: none\n}`;
+                }
+                return `.${escapeClass(cls)}${
+                    state ? `${state}` : ''
+                }{transform:none}`;
+            }
+
+
+            let typeVar;
+            if (prefix === 'scale-x-') typeVar = ['--cl-scale-x'];
+            else if (prefix === 'scale-y-') typeVar = ['--cl-scale-y'];
+            else if (prefix === 'scale-') typeVar = ['--cl-scale-x', '--cl-scale-y'];
+            else if (prefix === 'skew-x-') typeVar = ['--cl-skew-x'];
+            else if (prefix === 'skew-y-') typeVar = ['--cl-skew-y'];
+            else if (prefix === 'skew-') typeVar = ['--cl-skew-x', '--cl-skew-y'];
+            else if (prefix === 'translate-x-') typeVar = ['--cl-translate-x'];
+            else if (prefix === 'translate-y-') typeVar = ['--cl-translate-y'];
+            else if (prefix === 'translate-') typeVar = ['--cl-translate-x', '--cl-translate-y'];
+            else if (prefix === 'rotate-') typeVar = ['--cl-rotate'];
+
+
+            typeVar = typeVar.map((i) => `${i}: ${value}`)
+
+            if (isResponsive && !isMinCss) {
+                return `.${escapeClass(cls)}${
+                    state ? `${state}` : ''
+                } {\n\t\t${typeVar.join(';\n\t')};\n\t\ttransform: translate(var(--cl-translate-x), var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))\n\t}`;
+            }
+            if (!isMinCss) {
+                return `.${escapeClass(cls)}${
+                    state ? `${state}` : ''
+                } {\n\t${typeVar.join(';\n\t')};\n\ttransform: translate(var(--cl-translate-x), var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))\n}`;
+            }
+            return `.${escapeClass(cls)}${
+                state ? `${state}` : ''
+            }{${typeVar.join(';\n\t')};transform:translate(var(--cl-translate-x),var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))}`;
+        }
+    },
+    /*translate: {
         getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
             const directionVariable = prefix === 'translate-x-' ? '--cl-translate-x' : '--cl-translate-y';
             if (isResponsive && !isMinCss) {
@@ -66,7 +147,7 @@ const uniqueRules = {
                 state ? `${state}` : ''
             }{${directionVariable}:${value};translate:var(--cl-translate-x) var(--cl-translate-y)}`;
         },
-    },
+    },*/
     space: {
         getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
             let property;

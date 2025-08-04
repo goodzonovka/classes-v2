@@ -12,6 +12,7 @@ const {backgroundConfig} = require("./backgroundConfig");
 const {interactivityConfig} = require("./interactivityConfig");
 const {effectsConfig} = require("./effectsConfig");
 const {filterConfig} = require("./filterConfig");
+const {transitionsAndAnimationConfig} = require("./transitionsAndAnimationConfig");
 
 const config = {
     ...tableConfig,
@@ -27,6 +28,7 @@ const config = {
     ...interactivityConfig,
     ...effectsConfig,
     ...filterConfig,
+    ...transitionsAndAnimationConfig,
     ...other,
 };
 

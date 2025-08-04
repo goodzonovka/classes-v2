@@ -2,7 +2,7 @@ const { STATES, RESPONSIVE_MAP, RESPONSIVE_PREFIXES } = require('./constants');
 const {createRule} = require('./createCssRule');
 const {getValue} = require('./getCssValue');
 const { colorNames, fixedColorValues, getColorInfo } = require('./color');
-const { isNumber } = require('./functions');
+const { isValidCssNumber } = require('./functions');
 
 const responsiveRules = Object.fromEntries(
     RESPONSIVE_PREFIXES.map(key => [key, []])
@@ -12,13 +12,14 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
     let css = '';
 
     const rules = [];
-    let translatePropertiesAdded = false;
 
+    const variables = !isMinCss ? '*, ::before, ::after {\n\t--cl-translate-x: 0;\n\t--cl-translate-y: 0;\n\t--cl-rotate: 0;\n\t--cl-skew-x: 0;\n\t--cl-skew-y: 0;\n\t--cl-scale-x: 1;\n\t--cl-scale-y: 1;\n}' : '*{--cl-translate-x:0;--cl-translate-y:0;--cl-rotate:0;--cl-skew-x:0;--cl-skew-y:0;--cl-scale-x:1;--cl-scale-y:1}'
     const borderSolidRule = !isMinCss ? '* {\n \tborder: 0 solid\n}' : '*{border:0 solid}'
+    rules.push(variables)
     rules.push(borderSolidRule)
 
     for (const className of classSet) {
-        if (/--+/.test(className)) continue; // если больше 1 дефиса подряд в классе
+        if (/--+/.test(className) || className.endsWith('-')) continue; // если больше 1 дефиса подряд в классе или класс заканчивается на дефис
 
         const classNameParts = className.split(':');
         let responsivePrefix = null;
@@ -84,7 +85,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
             if (!props) continue;
 
-            if (props.join() === 'color' && isNumber(value)) {
+            if (props.join() === 'color' && isValidCssNumber(value)) {
                 props = ['font-size']
             }
 
@@ -110,18 +111,6 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
             let rule = null;
 
             const isResponsive = !!RESPONSIVE_MAP[responsivePrefix];
-
-            if (!translatePropertiesAdded && propsStr === 'translate') {
-                let translateProperties;
-                if (!isMinCss) {
-                    translateProperties = `@property --cl-translate-x {\n\tsyntax: "*";\n\tinherits: false;\n\tinitial-value: 0\n}\n\n@property --cl-translate-y {\n\tsyntax: "*";\n\tinherits: false;\n\tinitial-value: 0\n}`
-                } else {
-                    translateProperties = `@property --cl-translate-x{syntax:"*";inherits:false;initial-value:0}@property --cl-translate-y{syntax:"*";inherits:false;initial-value:0}`
-                }
-                rules.push(translateProperties)
-                translatePropertiesAdded = true;
-            }
-
 
             rule = createRule(className, props, val, prefix, isImportant, state, isResponsive, isMinCss);
 

@@ -12,6 +12,7 @@ const {textDecoration} = require("./textDecoration.js");
 const {textOverflow} = require("./textOverflow.js");
 const {wordBreak} = require("./wordBreak.js");
 const {verticalAlign} = require("./verticalAlign.js");
+const {listStyleType} = require("./listStyleType.js");
 
 const typographyConfig = {
   ...fontWeight,
@@ -28,6 +29,7 @@ const typographyConfig = {
   ...textOverflow,
   ...wordBreak,
   ...verticalAlign,
+  ...listStyleType,
 };
 
 module.exports = {typographyConfig}

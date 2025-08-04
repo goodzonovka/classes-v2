@@ -113,8 +113,14 @@ for (const dir of scanPaths) {
 
     if (['.html', '.php', '.phtml'].includes(ext)) {
       const wrappedHtml = `<div data-file="${filePath}">\n${fileContent}\n</div>\n`;
+      // console.log(wrappedHtml)
       const root = parse(wrappedHtml, { lowerCaseTagName: false, script: true, style: true, pre: true });
+      // console.log('root')
+      // console.log(root)
       const elementsWithClass = root.querySelectorAll('[class]');
+      // console.log(extractMatchingClassesFromDomElements(elementsWithClass, config))
+      // console.log('q')
+      // console.log(elementsWithClass)
       const htmlClasses = extractMatchingClassesFromDomElements(elementsWithClass, config);
       htmlClasses.forEach(cls => classSet.add(cls));
     }
@@ -126,12 +132,14 @@ for (const dir of scanPaths) {
   });
 }
 
-const isDev = true;
+const isDev = false;
 const isMinCss = false;
 
 // 🎨 Генерация переменных и CSS
 const cssVars = generateCssVars(isMinCss); // false = production mode
+// console.log(classSet)
 const css = generateCssFromClasses(classSet, config, isDev, isMinCss);
+// console.log(css)
 
 // 💾 Сохраняем CSS
 const outDir = path.resolve(__dirname, 'dist/css');
@@ -141,3 +149,7 @@ if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
 fs.writeFileSync(path.join(outDir, 'classes-v2.css'), `${cssVars}\n${css}`);
 console.timeEnd('⏱️ CSS сгенерирован за');
 console.log('✅ CSS сгенерирован: dist/css/classes-v2.css');
+
+module.exports = {
+  extractMatchingClassesFromDomElements,
+}

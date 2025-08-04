@@ -1,10 +1,9 @@
 const {rulesForStaticClasses} = require("./rulesForStaticClasses");
 const {rulesForPrefixes} = require("./rulesForPrefixes");
-const {isNumber, isNumeric, isValidCalcExpression, normalizeCalcExpression} = require("./functions");
+const {isValidCssNumber, isStrictInteger, isValidCalcExpression, normalizeCalcExpression} = require("./functions");
 
 function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
     // console.log(value, isNegative, propStr, rawClass, prefix, colorInfo)
-
     const isStaticValue = rulesForStaticClasses[propStr] && rulesForStaticClasses[propStr][rawClass];
     let result = null;
 
@@ -20,15 +19,16 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
 
     /*console.log('specialValues', specialValues)
     console.log(!acceptedValues.valuePercent && /^\d+\/\d+$/.test(value))
-    console.log(!acceptedValues.number && isNumber(value))*/
+    console.log(!acceptedValues.number && isValidCssNumber(value))*/
     if (
         !acceptedValues.negative && isNegative ||
         value === 'auto' && isNegative ||
         value === '0' && isNegative ||
         acceptedValues.minValue > value ||
         !acceptedValues.valuePercent && /^\d+\/\d+$/.test(value)
-        // || acceptedValues.number && !isNumber(value) && !(specialValues && specialValues[value])
+        // || acceptedValues.number && !isValidCssNumber(value) && !(specialValues && specialValues[value])
     ) return [null, null]
+
 
     if (acceptedValues.auto && value === 'auto') { // can be auto
         result = 'auto';
@@ -43,7 +43,7 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         if (acceptedValues.negative && isNegative) {  // can be negative full - 100%
             result = '-' + result;
         }
-    } else if (acceptedValues.number && isNumber(value)) { // can be number
+    } else if (acceptedValues.number && isValidCssNumber(value)) { // can be number
         if (value === '0') {
             result = 0;
         } else if (acceptedValues.valuePx) {
@@ -59,9 +59,9 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         if (acceptedValues.negative && isNegative) { // can be negative number with px OR negative only number
             result = '-' + result;
         }
-    } else if (acceptedValues.numeric && isNumeric(value)) { // can be only numeric
+    } else if (acceptedValues.isStrictInteger && isStrictInteger(value)) { // can be only strict integer
         result = value;
-        if (acceptedValues.negative && isNegative) { // can be negative only numeric
+        if (acceptedValues.negative && isNegative) { // can be negative only strict integer
             result = '-' + result;
         }
     } else if (acceptedValues.valuePercent && /^\d+\/\d+$/.test(value)) { // can be only number/number + percent
@@ -82,15 +82,13 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         result = colorInfo;
     }
 
-    // console.log('result', result)
-
     if (specialValues && specialValues[value] && !isNegative) {
         result = specialValues[value];
     } else if (rulesForClass.uniqueResult && (result || value) && !(acceptedValues.noResultError && !result)) {
         result = rulesForClass.uniqueResult(result || value);
     }
 
-/*    console.log('result', result)
+ /*   console.log('result', result)
     console.log('value', value)*/
 
     return [result, isStaticValue];

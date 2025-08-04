@@ -98,6 +98,7 @@ const COLORS = {
         "gold": '#FAC71E',
         "silver": '#C0C8D0',
         "bronze": '#FCA16E',
+        "linkedin": "#006394",
     }
 };
 

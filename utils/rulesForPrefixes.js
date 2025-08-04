@@ -1,4 +1,4 @@
-const {getColorValue, isNumber} = require('./functions.js');
+const {getColorValue} = require('./functions.js');
 
 const borderRadiusValues = {
     none: '0px',
@@ -151,13 +151,13 @@ const rulesForPrefixes = {
     'z-': {
         acceptableValues: {
             auto: true,
-            numeric: true,
+            isStrictInteger: true,
             negative: true,
         }
     },
     'order-': {
         acceptableValues: {
-            numeric: true,
+            isStrictInteger: true,
             negative: true,
         },
         specialValues: {
@@ -269,7 +269,7 @@ const rulesForPrefixes = {
             number: true,
             valuePx: true,
             valueCalc: true,
-             negative: true,
+            negative: true,
         }
     },
     'space-y-reverse-': {
@@ -277,7 +277,7 @@ const rulesForPrefixes = {
             number: true,
             valuePx: true,
             valueCalc: true,
-             negative: true,
+            negative: true,
         }
     },
     'space-x-': {
@@ -298,11 +298,65 @@ const rulesForPrefixes = {
     },
     'opacity-': {
         acceptableValues: {
-            numeric: true,
+            isStrictInteger: true,
         },
         uniqueResult: function (value) {
-            return  value < 10 ? `0.0${value}` : value < 100 ? `0.${value}` : +value === 100 ? 1 : null;
+            return value < 10 ? `0.0${value}` : value < 100 ? `0.${value}` : +value === 100 ? 1 : null;
         },
+    },
+    'scale-x-': {
+        acceptableValues: {
+            isStrictInteger: true,
+            negative: true,
+        },
+        uniqueResult: function (value) {
+            return parseFloat((value / 100).toString())
+        }
+    },
+    'scale-y-': {
+        acceptableValues: {
+            isStrictInteger: true,
+            negative: true,
+        },
+        uniqueResult: function (value) {
+            return parseFloat((value / 100).toString())
+        }
+    },
+    'scale-': {
+        acceptableValues: {
+            isStrictInteger: true,
+            negative: true,
+        },
+        uniqueResult: function (value) {
+            return parseFloat((value / 100).toString())
+        }
+    },
+    'skew-x-': {
+        acceptableValues: {
+            isStrictInteger: true,
+            negative: true,
+        },
+        uniqueResult: function (value) {
+            return `${value}deg`
+        }
+    },
+    'skew-y-': {
+        acceptableValues: {
+            isStrictInteger: true,
+            negative: true,
+        },
+        uniqueResult: function (value) {
+            return `${value}deg`
+        }
+    },
+    'skew-': {
+        acceptableValues: {
+            isStrictInteger: true,
+            negative: true,
+        },
+        uniqueResult: function (value) {
+            return `${value}deg`
+        }
     },
     'w-': {
         acceptableValues: {
@@ -411,7 +465,7 @@ const rulesForPrefixes = {
     },
     'grow': {
         acceptableValues: {
-            numeric: true,
+            isStrictInteger: true,
         },
         specialValues: {
             '': '1',
@@ -419,7 +473,7 @@ const rulesForPrefixes = {
     },
     'shrink': {
         acceptableValues: {
-            numeric: true,
+            isStrictInteger: true,
         },
         specialValues: {
             '': '1',
@@ -437,7 +491,7 @@ const rulesForPrefixes = {
     'columns-': {
         acceptableValues: {
             auto: true,
-            numeric: true,
+            isStrictInteger: true,
         },
         specialValues: {
             '3xs': '256px',
@@ -457,7 +511,7 @@ const rulesForPrefixes = {
     },
     'col-span-': {
         acceptableValues: {
-            numeric: true,
+            isStrictInteger: true,
             minValue: 1,
         },
         specialValues: {
@@ -470,18 +524,18 @@ const rulesForPrefixes = {
     'col-start-': {
         acceptableValues: {
             auto: true,
-            numeric: true,
+            isStrictInteger: true,
         }
     },
     'col-end-': {
         acceptableValues: {
             auto: true,
-            numeric: true,
+            isStrictInteger: true,
         }
     },
     'grid-cols-': {
         acceptableValues: {
-            numeric: true,
+            isStrictInteger: true,
             minValue: 1,
         },
         specialValues: {
@@ -494,7 +548,7 @@ const rulesForPrefixes = {
     },
     'grid-rows-': {
         acceptableValues: {
-            numeric: true,
+            isStrictInteger: true,
             minValue: 1,
         },
         specialValues: {
@@ -535,7 +589,7 @@ const rulesForPrefixes = {
     },
     'line-clamp-': {
         acceptableValues: {
-            numeric: true,
+            isStrictInteger: true,
             minValue: 1,
         },
         specialValues: {
@@ -548,6 +602,23 @@ const rulesForPrefixes = {
             '': true,
         }
     },
+    'transition-': {
+        acceptableValues: {},
+        specialValues: {
+            'none': 'none',
+            'all': 'all',
+            'colors': 'color, background-color, border-color, text-decoration-color, fill, stroke',
+            'opacity': 'opacity',
+            'shadow': 'box-shadow',
+            'transform': 'transform',
+        }
+    },
+    'transition': {
+        acceptableValues: {},
+        specialValues: {
+            '': 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
+        }
+    },
     'translate-x-': {
         acceptableValues: {
             number: true,
@@ -558,6 +629,15 @@ const rulesForPrefixes = {
         }
     },
     'translate-y-': {
+        acceptableValues: {
+            number: true,
+            valuePx: true,
+            valuePercent: true,
+            valueFull: true,
+            negative: true,
+        }
+    },
+    'translate-': {
         acceptableValues: {
             number: true,
             valuePx: true,
@@ -760,7 +840,7 @@ const rulesForPrefixes = {
             negative: true,
         },
         uniqueResult: function (value) {
-            return `rotate(${value}deg)`
+            return `${value}deg`
         }
     },
     'content-': {
@@ -769,10 +849,9 @@ const rulesForPrefixes = {
         },
     },
     'aspect-': {
-        acceptableValues: {
-            auto: true,
-        },
+        acceptableValues: {},
         specialValues: {
+            'auto': 'auto',
             'square': '1 / 1',
             'video': '16 / 9',
         },
@@ -804,9 +883,37 @@ const rulesForPrefixes = {
         uniqueResult: function (value) {
             return `blur(${value})`
         }
+    },
+    'list-': {
+        acceptableValues: {},
+        specialValues: {
+            'none': 'none',
+            'disc': 'disc',
+            'decimal': 'decimal',
+        }
+    },
+    'origin-': {
+        acceptableValues: {},
+        specialValues: {
+            'center': 'center',
+            'top': 'top',
+            'top-right': 'top right',
+            'right': 'right',
+            'bottom-right': 'bottom right',
+            'bottom': 'bottom',
+            'bottom-left': 'bottom left',
+            'left': 'left',
+            'top-left': 'top left',
+        }
+    },
+    'transform-': {
+        acceptableValues: {},
+        specialValues: {
+            'none': 'none',
+        }
     }
 }
 
 module.exports = {
-  rulesForPrefixes,
+    rulesForPrefixes,
 };

@@ -5,12 +5,16 @@
   "main": "build-css.js",
   "scripts": {
     "build:css": "node build-css.js",
-    "watch:css": "node watch-css.js"
+    "watch:css": "node watch-css.js",
+    "test": "jest"
   },
   "author": "Fesovets Artem",
   "license": "ISC",
   "dependencies": {
     "chokidar": "^3.5.3",
     "node-html-parser": "^7.0.1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
