@@ -55,19 +55,25 @@ function extractMatchingClassesFromDomElements(elements, configMap) {
     const classes = classAttr.trim().split(/\s+/);
 
     for (let className of classes) {
-      const classNameParts = className.split(':');
+      const classNameParts = className.split(/:(?![^\[]*\])/);
       let parts = [...classNameParts];
 
       if (parts.length > 1) {
         parts = parts.filter(part => !RESPONSIVE_PREFIXES.includes(part));
         parts = parts.filter(part => !STATES.includes(part));
-        if (classNameParts.includes('has') && parts.length === 2 && /^\[.*\]$/.test(parts[0])) {
+
+        /*if ((classNameParts.includes('nth-child') || classNameParts.includes('not')) && parts.length === 2 && /^\[.*\]$/.test(parts[0])) {
+          parts = parts.slice(1)
+        }*/
+
+        if (parts.length === 2 && /^\[.*\]$/.test(parts[0])) {
           parts = parts.slice(1)
         }
       }
 
       let rawClass = parts.join(':');
       if (rawClass.startsWith('!')) rawClass = rawClass.slice(1);
+
 
       for (const prefix in configMap) {
         if (rawClass.startsWith(prefix) || rawClass.startsWith(`-${prefix}`)) {

@@ -8,6 +8,7 @@ const {whiteSpace} = require("./whiteSpace.js");
 const {userSelect} = require("./userSelect.js");
 const {letterSpacing} = require("./letterSpacing.js");
 const {textTransform} = require("./textTransform.js");
+const {textUnderlinePosition} = require("./textUnderlinePosition.js");
 const {textDecoration} = require("./textDecoration.js");
 const {textOverflow} = require("./textOverflow.js");
 const {wordBreak} = require("./wordBreak.js");
@@ -25,6 +26,7 @@ const typographyConfig = {
   ...color,
   ...letterSpacing,
   ...textTransform,
+  ...textUnderlinePosition,
   ...textDecoration,
   ...textOverflow,
   ...wordBreak,

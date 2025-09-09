@@ -318,6 +318,10 @@ const rulesForStaticClasses = {
         'align-text-bottom': 'text-bottom',
         'align-sub': 'sub',
         'align-super': 'super',
+    },
+    'flex-shrink': {
+        'shrink-0': '0',
+        'shrink': '1',
     }
 }
 

@@ -1,10 +1,14 @@
-const { STATES, RESPONSIVE_MAP, RESPONSIVE_PREFIXES } = require('./constants');
+const {STATES, RESPONSIVE_MAP, RESPONSIVE_PREFIXES} = require('./constants');
 const {createRule} = require('./createCssRule');
 const {getValue} = require('./getCssValue');
-const { colorNames, fixedColorValues, getColorInfo } = require('./color');
-const { isValidCssNumber } = require('./functions');
+const {colorNames, fixedColorValues, getColorInfo} = require('./color');
+const {isValidCssNumber} = require('./functions');
 
 const responsiveRules = Object.fromEntries(
+    RESPONSIVE_PREFIXES.map(key => [key, []])
+);
+
+const responsiveLastRules = Object.fromEntries(
     RESPONSIVE_PREFIXES.map(key => [key, []])
 );
 
@@ -13,6 +17,10 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
     const rules = [];
 
+    const lastRules = [];
+
+    const propsForLastRules = ['transition-duration'];
+
     const variables = !isMinCss ? '*, ::before, ::after {\n\t--cl-translate-x: 0;\n\t--cl-translate-y: 0;\n\t--cl-rotate: 0;\n\t--cl-skew-x: 0;\n\t--cl-skew-y: 0;\n\t--cl-scale-x: 1;\n\t--cl-scale-y: 1;\n}' : '*{--cl-translate-x:0;--cl-translate-y:0;--cl-rotate:0;--cl-skew-x:0;--cl-skew-y:0;--cl-scale-x:1;--cl-scale-y:1}'
     const borderSolidRule = !isMinCss ? '* {\n \tborder: 0 solid\n}' : '*{border:0 solid}'
     rules.push(variables)
@@ -20,8 +28,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
     for (const className of classSet) {
         if (/--+/.test(className) || className.endsWith('-')) continue; // если больше 1 дефиса подряд в классе или класс заканчивается на дефис
-
-        const classNameParts = className.split(':');
+        const classNameParts = className.split(/:(?![^\[]*\])/);
         let responsivePrefix = null;
         let state = [];
 
@@ -35,7 +42,6 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
             }
         })
 
-
         STATES.forEach(el => {
             const index = classNameParts.indexOf(el);
             if (index !== -1) {
@@ -44,18 +50,32 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         })
 
 
+        // console.log(classNameParts)
+
         let rawClass = classNameParts.join();
+
+        const arrRawClass = rawClass.split(',');
+
+        if (/^\[.*\]$/.test(arrRawClass[0])) {
+            rawClass = arrRawClass.filter(item => !/^\[.*\]$/.test(item))[0];
+        }
+
+        /* if (state.includes('nth-child') || state.includes('not')) {
+             if (arrRawClass.length === 2 && /^\[.*\]$/.test(arrRawClass[0])) {
+                 rawClass = arrRawClass[1]
+             }
+         }
+         if (state.includes('has')) {
+             if (arrRawClass.length === 2 || arrRawClass.length === 3 && /^\[.*\]$/.test(arrRawClass[0])) {
+                 rawClass = arrRawClass.filter(item => !/^\[.*\]$/.test(item))[0];
+             }
+         }*/
+
+        // console.log(rawClass)
 
         const isImportant = rawClass.startsWith('!');
 
         rawClass = isImportant ? rawClass.slice(1) : rawClass;
-
-        if (state.includes('has')) {
-            const arrRawClass = rawClass.split(',');
-            if (arrRawClass.length === 2 && /^\[.*\]$/.test(arrRawClass[0])) {
-                rawClass = arrRawClass[1]
-            }
-        }
 
         const prefixes = Object.keys(config);
 
@@ -96,7 +116,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
                 colorInfo = getColorInfo(value)
             }
 
-          if (isColor && (!colorInfo || (!colorInfo.hex && !colorInfo.fixedValue))) continue;
+            if (isColor && (!colorInfo || (!colorInfo.hex && !colorInfo.fixedValue))) continue;
 
             const propsStr = props.join();
 
@@ -112,27 +132,46 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
             const isResponsive = !!RESPONSIVE_MAP[responsivePrefix];
 
+            // console.log(propsForLastRules)
+            // console.log(props)
+            // console.log(props.join())
+
+            // console.log('state', state.join())
+
             rule = createRule(className, props, val, prefix, isImportant, state, isResponsive, isMinCss);
 
-            if (isResponsive) {
-                responsiveRules[responsivePrefix].push(rule);
+            if (propsForLastRules.includes(props.join()) || state.join()) {
+                if (isResponsive) {
+                    responsiveLastRules[responsivePrefix].push(rule);
+                } else {
+                    lastRules.push(rule)
+                }
             } else {
-                rules.push(rule)
+                if (isResponsive) {
+                    responsiveRules[responsivePrefix].push(rule);
+                } else {
+                    rules.push(rule)
+                }
             }
 
             break;
         }
     }
 
+    const allRules = [...rules, ...lastRules];
 
+    css += !isMinCss ? allRules.join('\n\n') : allRules.join('');
 
-    css += !isMinCss ? rules.join('\n\n') : rules.join('');
+    const responsiveAllRules = Object.keys(responsiveRules).reduce((acc, key) => {
+        acc[key] = [...responsiveRules[key], ...responsiveLastRules[key]];
+        return acc;
+    }, {});
 
-    for (const key in responsiveRules) {
-        const rules = responsiveRules[key];
+    for (const key in responsiveAllRules) {
+        const rules = responsiveAllRules[key];
         if (rules.length) {
             css += !isMinCss ? `\n\n@media (min-width: ${RESPONSIVE_MAP[key]}px) {\n\t${rules.join('\n\t')}\n}` :
-                            `@media(min-width:${RESPONSIVE_MAP[key]}px){${rules.join('')}}`;
+                `@media(min-width:${RESPONSIVE_MAP[key]}px){${rules.join('')}}`;
         }
     }
 
@@ -155,5 +194,5 @@ function debug(cls, rawCls, prefix, value, props, isNegative, isImportant, prefi
 }
 
 module.exports = {
-  generateCssFromClasses
+    generateCssFromClasses
 };

@@ -239,13 +239,21 @@ function createRule(
         } else if (i === 'first') {
             stateStr += ':first-child'
         } else if (i === 'last') {
-            stateStr += ':last-child'
+            const match = cls.match(/\[(.*?)\]/);
+
+            stateStr += ':last-child' + (match ? ' ' + match[1] : '')
         } else if (i === 'odd') {
             stateStr += ':nth-child(odd)'
         } else if (i === 'even') {
             stateStr += ':nth-child(even)'
+        } else if(i === 'nth-child') {
+            const match = cls.match(/\[(.*?)\]/);
+            stateStr += `:nth-child(${match[1]})`
         } else if (i ==='rtl') {
             stateStr += ':where([dir=rtl], [dir=rtl] *)'
+        } else if (i === 'not') {
+            const match = cls.match(/\[(.*?)\]/);
+            stateStr += `:not(${match[1]})`
         } else {
             stateStr += `:${i}`
         }

@@ -1,4 +1,4 @@
-const STATES = ['rtl', 'disabled', 'hover', 'focus', 'before', 'after', 'has', 'first', 'last', 'odd', 'even']
+const STATES = ['rtl', 'disabled', 'hover', 'focus', 'before', 'after', 'has', 'first', 'last', 'odd', 'even', 'nth-child', 'not']
 
 const RESPONSIVE_MAP = {
     xs: 375,

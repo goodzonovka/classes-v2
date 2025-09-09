@@ -471,14 +471,6 @@ const rulesForPrefixes = {
             '': '1',
         }
     },
-    'shrink': {
-        acceptableValues: {
-            isStrictInteger: true,
-        },
-        specialValues: {
-            '': '1',
-        }
-    },
     'flex-': {
         acceptableValues: {},
         specialValues: {
@@ -617,6 +609,15 @@ const rulesForPrefixes = {
         acceptableValues: {},
         specialValues: {
             '': 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
+        }
+    },
+    'duration-': {
+        acceptableValues: {
+            isStrictInteger: true,
+            noResultError: true,
+        },
+        uniqueResult: function (value) {
+            return `${value}ms`
         }
     },
     'translate-x-': {
@@ -910,6 +911,15 @@ const rulesForPrefixes = {
         acceptableValues: {},
         specialValues: {
             'none': 'none',
+        }
+    },
+    'underline-': {
+        acceptableValues: {},
+        specialValues: {
+            'auto': 'auto',
+            'under': 'under',
+            'left': 'left',
+            'right': 'right',
         }
     }
 }

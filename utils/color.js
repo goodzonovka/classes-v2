@@ -44,11 +44,8 @@ function getColorInfo(fullValue) {
 
     if (withOpacity) {
         const valueParts = fullValue.split('-')
-        console.log(valueParts)
         value = valueParts.slice(0, -2).join('-');
-        console.log(valueParts[valueParts.length - 1])
         opacityValue = isStrictInteger(valueParts[valueParts.length - 1]) ? valueParts[valueParts.length - 1] : null;
-        console.log(opacityValue)
         if (!opacityValue) return;
     }
 
