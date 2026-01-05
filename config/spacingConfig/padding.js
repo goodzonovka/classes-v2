@@ -1,4 +1,6 @@
 const padding = {
+    'pie-': ['padding-inline-end'],
+    'pis-': ['padding-inline-start'],
     'pt-': ['padding-top'],
     'pr-': ['padding-right'],
     'pb-': ['padding-bottom'],

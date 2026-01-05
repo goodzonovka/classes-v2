@@ -1,4 +1,6 @@
 const margin = {
+    'mgie-': ['margin-inline-end'],
+    'mgis-': ['margin-inline-start'],
     'mgt-': ['margin-top'],
     'mgr-': ['margin-right'],
     'mgb-': ['margin-bottom'],

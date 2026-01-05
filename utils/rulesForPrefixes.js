@@ -92,6 +92,26 @@ const rulesForPrefixes = {
             valueCalc: true,
         }
     },
+    'mgis-': {
+        acceptableValues: {
+            auto: true,
+            number: true,
+            negative: true,
+            valuePx: true,
+            valuePercent: true,
+            valueCalc: true,
+        }
+    },
+    'mgie-': {
+        acceptableValues: {
+            auto: true,
+            number: true,
+            negative: true,
+            valuePx: true,
+            valuePercent: true,
+            valueCalc: true,
+        }
+    },
     'p-': {
         acceptableValues: {
             number: true,
@@ -141,6 +161,22 @@ const rulesForPrefixes = {
         }
     },
     'pl-': {
+        acceptableValues: {
+            number: true,
+            valuePx: true,
+            valuePercent: true,
+            valueCalc: true,
+        }
+    },
+    'pis-': {
+        acceptableValues: {
+            number: true,
+            valuePx: true,
+            valuePercent: true,
+            valueCalc: true,
+        }
+    },
+    'pie-': {
         acceptableValues: {
             number: true,
             valuePx: true,
@@ -254,6 +290,28 @@ const rulesForPrefixes = {
         }
     },
     'inset-y-': {
+        acceptableValues: {
+            auto: true,
+            number: true,
+            negative: true,
+            valuePx: true,
+            valuePercent: true,
+            valueFull: true,
+            valueCalc: true,
+        }
+    },
+    'is-': {
+        acceptableValues: {
+            auto: true,
+            number: true,
+            negative: true,
+            valuePx: true,
+            valuePercent: true,
+            valueFull: true,
+            valueCalc: true,
+        }
+    },
+    'ie-': {
         acceptableValues: {
             auto: true,
             number: true,
@@ -573,7 +631,7 @@ const rulesForPrefixes = {
         specialValues: {
             'tighter': '-0.05em',
             'tight': '-0.025em',
-            'normal': '0em',
+            'normal': '0',
             'wide': '0.025em',
             'wider': '0.05em',
             'widest': '0.1em',
@@ -921,7 +979,14 @@ const rulesForPrefixes = {
             'left': 'left',
             'right': 'right',
         }
-    }
+    },
+    'pointer-events-': {
+        acceptableValues: {},
+        specialValues: {
+            'none': 'none',
+            'auto': 'auto',
+        }
+    },
 }
 
 module.exports = {

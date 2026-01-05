@@ -1,4 +1,6 @@
 const offset = {
+    'is-': ['inset-inline-start'],
+    'ie-': ['inset-inline-end'],
     'top-': ['top'],
     'right-': ['right'],
     'bottom-': ['bottom'],

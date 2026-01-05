@@ -79,7 +79,7 @@ const uniqueRules = {
         },
     },
     transform: {
-        getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
+        getRule: function (cls, value, prefix, isMinCss, state, isResponsive, isImportant) {
             // console.log(cls, value, prefix, isMinCss, state, isResponsive)
 
 
@@ -118,16 +118,16 @@ const uniqueRules = {
             if (isResponsive && !isMinCss) {
                 return `.${escapeClass(cls)}${
                     state ? `${state}` : ''
-                } {\n\t\t${typeVar.join(';\n\t')};\n\t\ttransform: translate(var(--cl-translate-x), var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))\n\t}`;
+                } {\n\t\t${typeVar.join(';\n\t')};\n\t\ttransform: translate(var(--cl-translate-x), var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))${isImportant ? ' !important' : ''}\n\t}`;
             }
             if (!isMinCss) {
                 return `.${escapeClass(cls)}${
                     state ? `${state}` : ''
-                } {\n\t${typeVar.join(';\n\t')};\n\ttransform: translate(var(--cl-translate-x), var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))\n}`;
+                } {\n\t${typeVar.join(';\n\t')};\n\ttransform: translate(var(--cl-translate-x), var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))${isImportant ? ' !important' : ''}\n}`;
             }
             return `.${escapeClass(cls)}${
                 state ? `${state}` : ''
-            }{${typeVar.join(';\n\t')};transform:translate(var(--cl-translate-x),var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))}`;
+            }{${typeVar.join(';\n\t')};transform:translate(var(--cl-translate-x),var(--cl-translate-y)) rotate(var(--cl-rotate)) skewX(var(--cl-skew-x)) skewY(var(--cl-skew-y)) scaleX(var(--cl-scale-x)) scaleY(var(--cl-scale-y))${isImportant ? ' !important' : ''}}`;
         }
     },
     /*translate: {
@@ -262,7 +262,7 @@ function createRule(
     // console.log('stateStr', stateStr)
 
     if (uniqueRules[property]) {
-        return uniqueRules[property].getRule(cls, value, prefix, isMinCss, stateStr, isResponsive);
+        return uniqueRules[property].getRule(cls, value, prefix, isMinCss, stateStr, isResponsive, isImportant);
     }
     if (isResponsive) {
         if (!isMinCss) {
