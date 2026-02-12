@@ -1,4 +1,18 @@
 const borderRadius = {
+    'rounded-ss-': ['border-start-start-radius'],
+    'rounded-ss': ['border-start-start-radius'],
+    'rounded-se-': ['border-start-end-radius'],
+    'rounded-se': ['border-start-end-radius'],
+    'rounded-ee-': ['border-end-end-radius'],
+    'rounded-ee': ['border-end-end-radius'],
+    'rounded-es-': ['border-end-start-radius'],
+    'rounded-es': ['border-end-start-radius'],
+
+    'rounded-s-': ['border-start-start-radius', 'border-end-start-radius'],
+    'rounded-s': ['border-start-start-radius', 'border-end-start-radius'],
+    'rounded-e-': ['border-start-end-radius', 'border-end-end-radius'],
+    'rounded-e': ['border-start-end-radius', 'border-end-end-radius'],
+
     'rounded-tl-': ['border-top-left-radius'],
     'rounded-tl': ['border-top-left-radius'],
     'rounded-tr-': ['border-top-right-radius'],

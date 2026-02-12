@@ -8,9 +8,10 @@
     <title>Document</title>
     <link rel="stylesheet" href="../dist/css/classes-v2.css">
 </head>
-<body dir="rtl">
-    <div class="rtl:after:left-auto">
+<body>
+    <div class="!transform-none">
         Lorem ipsum dolor sit amet.
     </div>
+
 </body>
 </html>

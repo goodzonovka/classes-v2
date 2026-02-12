@@ -2,80 +2,80 @@ const {escapeClass} = require('./functions');
 
 const uniqueRules = {
     'line-clamp': {
-        getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
+        getRule: function (cls, value, prefix, isMinCss, state, isResponsive, isImportant) {
             if (value === 'none') {
                 if (isResponsive && !isMinCss) {
                     return `.${escapeClass(
                         cls,
-                    )} {\n\t\toverflow: visible;\n\t\tdisplay: block;\n\t\t-webkit-box-orient: horizontal;\n\t\t-webkit-line-clamp: ${value}\n\t}`;
+                    )} {\n\t\toverflow: visible${isImportant ? ' !important' : ''};\n\t\tdisplay: block${isImportant ? ' !important' : ''};\n\t\t-webkit-box-orient: horizontal${isImportant ? ' !important' : ''};\n\t\t-webkit-line-clamp: ${value}${isImportant ? ' !important' : ''}\n\t}`;
                 }
                 if (!isMinCss) {
                     return `.${escapeClass(
                         cls,
-                    )} {\n\toverflow: visible;\n\tdisplay: block;\n\t-webkit-box-orient: horizontal;\n\t-webkit-line-clamp: ${value}\n}`;
+                    )} {\n\toverflow: visible${isImportant ? ' !important' : ''};\n\tdisplay: block${isImportant ? ' !important' : ''};\n\t-webkit-box-orient: horizontal${isImportant ? ' !important' : ''};\n\t-webkit-line-clamp: ${value}${isImportant ? ' !important' : ''}\n}`;
                 }
                 return `.${escapeClass(
                     cls,
-                )}{overflow:visible;display:block;-webkit-box-orient:horizontal;-webkit-line-clamp:${value}}`;
+                )}{overflow:visible${isImportant ? ' !important' : ''};display:block${isImportant ? ' !important' : ''};-webkit-box-orient:horizontal${isImportant ? ' !important' : ''};-webkit-line-clamp:${value}${isImportant ? ' !important' : ''}}`;
             }
 
             if (isResponsive && !isMinCss) {
                 return `.${escapeClass(
                     cls,
-                )} {\n\t\toverflow: hidden;\n\t\tdisplay: -webkit-box;\n\t\t-webkit-box-orient: vertical;\n\t\t-webkit-line-clamp: ${value}\n\t}`;
+                )} {\n\t\toverflow: hidden${isImportant ? ' !important' : ''};\n\t\tdisplay: -webkit-box${isImportant ? ' !important' : ''};\n\t\t-webkit-box-orient: vertical${isImportant ? ' !important' : ''};\n\t\t-webkit-line-clamp: ${value}${isImportant ? ' !important' : ''}\n\t}`;
             }
             if (!isMinCss) {
                 return `.${escapeClass(
                     cls,
-                )} {\n\toverflow: hidden;\n\tdisplay: -webkit-box;\n\t-webkit-box-orient: vertical;\n\t-webkit-line-clamp: ${value}\n}`;
+                )} {\n\toverflow: hidden${isImportant ? ' !important' : ''};\n\tdisplay: -webkit-box${isImportant ? ' !important' : ''};\n\t-webkit-box-orient: vertical${isImportant ? ' !important' : ''};\n\t-webkit-line-clamp: ${value}${isImportant ? ' !important' : ''}\n}`;
             }
             return `.${escapeClass(
                 cls,
-            )}{overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:${value}}`;
+            )}{overflow:hidden${isImportant ? ' !important' : ''};display:-webkit-box${isImportant ? ' !important' : ''};-webkit-box-orient:vertical${isImportant ? ' !important' : ''};-webkit-line-clamp:${value}${isImportant ? ' !important' : ''}}`;
         },
     },
     'transition-property': {
-        getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
+        getRule: function (cls, value, prefix, isMinCss, state, isResponsive, isImportant) {
             if (value === 'none') {
                 if (isResponsive && !isMinCss) {
                     return `.${escapeClass(
                         cls,
-                    )} {\n\t\ttransition-property: ${value}\n\t}`;
+                    )} {\n\t\ttransition-property: ${value}${isImportant ? ' !important' : ''}\n\t}`;
                 }
                 if (!isMinCss) {
                     return `.${escapeClass(
                         cls,
-                    )} {\n\ttransition-property: ${value}\n}`;
+                    )} {\n\ttransition-property: ${value}${isImportant ? ' !important' : ''}\n}`;
                 }
-                return `.${escapeClass(cls)}{transition-property:${value}}`;
+                return `.${escapeClass(cls)}{transition-property:${value}${isImportant ? ' !important' : ''}}`;
             }
 
             if (isResponsive && !isMinCss) {
                 return `.${escapeClass(
                     cls,
-                )} {\n\t\ttransition-property: ${value};\n\t\ttransition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n\t\ttransition-duration: 150ms\n\t}`;
+                )} {\n\t\ttransition-property: ${value}${isImportant ? ' !important' : ''};\n\t\ttransition-timing-function: cubic-bezier(0.4, 0, 0.2, 1)${isImportant ? ' !important' : ''};\n\t\ttransition-duration: 150ms${isImportant ? ' !important' : ''}\n\t}`;
             }
             if (!isMinCss) {
                 return `.${escapeClass(
                     cls,
-                )} {\n\ttransition-property: ${value};\n\ttransition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n\ttransition-duration: 150ms\n}`;
+                )} {\n\ttransition-property: ${value}${isImportant ? ' !important' : ''};\n\ttransition-timing-function: cubic-bezier(0.4, 0, 0.2, 1)${isImportant ? ' !important' : ''};\n\ttransition-duration: 150ms${isImportant ? ' !important' : ''}\n}`;
             }
-            return `.${escapeClass(cls)}{transition-property:${value};transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}`;
+            return `.${escapeClass(cls)}{transition-property:${value}${isImportant ? ' !important' : ''};transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1)${isImportant ? ' !important' : ''};transition-duration:150ms${isImportant ? ' !important' : ''}}`;
         }
     },
     truncate: {
-        getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
+        getRule: function (cls, value, prefix, isMinCss, state, isResponsive, isImportant) {
             if (isResponsive && !isMinCss) {
                 return `.${escapeClass(
                     cls,
-                )} {\n\t\toverflow: hidden;\n\t\ttext-overflow: ellipsis;\n\t\twhite-space: nowrap\n\t}`;
+                )} {\n\t\toverflow: hidden${isImportant ? ' !important' : ''};\n\t\ttext-overflow: ellipsis${isImportant ? ' !important' : ''};\n\t\twhite-space: nowrap${isImportant ? ' !important' : ''}\n\t}`;
             }
             if (!isMinCss) {
                 return `.${escapeClass(
                     cls,
-                )} {\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\twhite-space: nowrap\n}`;
+                )} {\n\toverflow: hidden${isImportant ? ' !important' : ''};\n\ttext-overflow: ellipsis${isImportant ? ' !important' : ''};\n\twhite-space: nowrap${isImportant ? ' !important' : ''}\n}`;
             }
-            return `.${escapeClass(cls)}{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}`;
+            return `.${escapeClass(cls)}{overflow:hidden${isImportant ? ' !important' : ''};text-overflow:ellipsis${isImportant ? ' !important' : ''};white-space:nowrap${isImportant ? ' !important' : ''}}`;
         },
     },
     transform: {
@@ -87,16 +87,16 @@ const uniqueRules = {
                 if (isResponsive && !isMinCss) {
                     return `.${escapeClass(cls)}${
                         state ? `${state}` : ''
-                    } {\n\t\ttransform: none\n\t}`;
+                    } {\n\t\ttransform: none${isImportant ? ' !important' : ''}\n\t}`;
                 }
                 if (!isMinCss) {
                     return `.${escapeClass(cls)}${
                         state ? `${state}` : ''
-                    } {\n\ttransform: none\n}`;
+                    } {\n\ttransform: none${isImportant ? ' !important' : ''}\n}`;
                 }
                 return `.${escapeClass(cls)}${
                     state ? `${state}` : ''
-                }{transform:none}`;
+                }{transform:none${isImportant ? ' !important' : ''}}`;
             }
 
 

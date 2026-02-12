@@ -797,6 +797,30 @@ const rulesForPrefixes = {
             staticPx: true,
         },
     },
+    'border-s-': {
+        acceptableValues: {
+            number: true,
+            staticPx: true,
+        },
+    },
+    'border-s': {
+        acceptableValues: {},
+        specialValues: {
+            '': '1px',
+        }
+    },
+    'border-e-': {
+        acceptableValues: {
+            number: true,
+            staticPx: true,
+        },
+    },
+    'border-e': {
+        acceptableValues: {},
+        specialValues: {
+            '': '1px',
+        }
+    },
     'border-t': {
         acceptableValues: {},
         specialValues: {
@@ -887,6 +911,19 @@ const rulesForPrefixes = {
     'rounded-br-': ruleForBorderRadius,
     'rounded-bl': ruleForBorderRadius,
     'rounded-bl-': ruleForBorderRadius,
+
+    'rounded-ss': ruleForBorderRadius,
+    'rounded-ss-': ruleForBorderRadius,
+    'rounded-se': ruleForBorderRadius,
+    'rounded-se-': ruleForBorderRadius,
+    'rounded-ee': ruleForBorderRadius,
+    'rounded-ee-': ruleForBorderRadius,
+    'rounded-es': ruleForBorderRadius,
+    'rounded-es-': ruleForBorderRadius,
+    'rounded-s': ruleForBorderRadius,
+    'rounded-s-': ruleForBorderRadius,
+    'rounded-e': ruleForBorderRadius,
+    'rounded-e-': ruleForBorderRadius,
     'border-spacing-': {
         acceptableValues: {
             number: true,
