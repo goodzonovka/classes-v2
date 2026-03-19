@@ -4,6 +4,49 @@ const {getValue} = require('./getCssValue');
 const {colorNames, fixedColorValues, getColorInfo} = require('./color');
 const {isValidCssNumber} = require('./functions');
 
+function parseClassName(className) {
+    if (/--+/.test(className) || className.endsWith('-')) return null;
+
+    const classNameParts = className.split(/:(?![^\[]*\])/);
+    let responsivePrefix = null;
+    const state = [];
+
+    if (RESPONSIVE_PREFIXES.includes(classNameParts[0])) {
+        responsivePrefix = classNameParts[0];
+    }
+
+    RESPONSIVE_PREFIXES.forEach(prefix => {
+        const index = classNameParts.indexOf(prefix);
+        if (index !== -1) {
+            responsivePrefix = classNameParts.splice(index, 1)[0];
+        }
+    });
+
+    STATES.forEach(el => {
+        const index = classNameParts.indexOf(el);
+        if (index !== -1) {
+            state.push(classNameParts.splice(index, 1).join());
+        }
+    });
+
+    let rawClass = classNameParts.join();
+    const arrRawClass = rawClass.split(',');
+
+    if (/^\[.*\]$/.test(arrRawClass[0])) {
+        rawClass = arrRawClass.filter(item => !/^\[.*\]$/.test(item))[0];
+    }
+
+    const isImportant = rawClass.startsWith('!');
+    rawClass = isImportant ? rawClass.slice(1) : rawClass;
+
+    return {
+        responsivePrefix,
+        state,
+        rawClass,
+        isImportant,
+    };
+}
+
 function generateCssFromClasses(classSet, config, isDev, isMinCss) {
     let css = '';
 
@@ -11,7 +54,6 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
     const lastRules = [];
 
-    // keep responsive buckets isolated per invocation to avoid cross-call leakage
     const responsiveRules = Object.fromEntries(
         RESPONSIVE_PREFIXES.map(key => [key, []])
     );
@@ -29,59 +71,11 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
 
     for (const className of classSet) {
-        if (/--+/.test(className) || className.endsWith('-')) continue; // если больше 1 дефиса подряд в классе или класс заканчивается на дефис
-        const classNameParts = className.split(/:(?![^\[]*\])/);
-        let responsivePrefix = null;
-        let state = [];
+        const parsedClass = parseClassName(className);
+        if (!parsedClass) continue;
 
-        if (RESPONSIVE_PREFIXES.includes(classNameParts[0])) {
-            responsivePrefix = classNameParts[0];
-        }
-        RESPONSIVE_PREFIXES.forEach(prefix => {
-            const index = classNameParts.indexOf(prefix);
-            if (index !== -1) {
-                responsivePrefix = classNameParts.splice(index, 1)[0];
-            }
-        })
-
-        STATES.forEach(el => {
-            const index = classNameParts.indexOf(el);
-            if (index !== -1) {
-                state.push(classNameParts.splice(index, 1).join())
-            }
-        })
-
-
-        // console.log(className)
-        // console.log(classNameParts)
-
-        let rawClass = classNameParts.join();
-
-        const arrRawClass = rawClass.split(',');
-
-        if (/^\[.*\]$/.test(arrRawClass[0])) {
-            rawClass = arrRawClass.filter(item => !/^\[.*\]$/.test(item))[0];
-        }
-
-        // console.log(arrRawClass)
-        // console.log(rawClass)
-
-        /* if (state.includes('nth-child') || state.includes('not')) {
-             if (arrRawClass.length === 2 && /^\[.*\]$/.test(arrRawClass[0])) {
-                 rawClass = arrRawClass[1]
-             }
-         }
-         if (state.includes('has')) {
-             if (arrRawClass.length === 2 || arrRawClass.length === 3 && /^\[.*\]$/.test(arrRawClass[0])) {
-                 rawClass = arrRawClass.filter(item => !/^\[.*\]$/.test(item))[0];
-             }
-         }*/
-
-        // console.log(rawClass)
-
-        const isImportant = rawClass.startsWith('!');
-
-        rawClass = isImportant ? rawClass.slice(1) : rawClass;
+        const {responsivePrefix, state, isImportant} = parsedClass;
+        let {rawClass} = parsedClass;
 
         const prefixes = Object.keys(config);
 
