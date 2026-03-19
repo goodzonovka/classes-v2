@@ -4,14 +4,6 @@ const {getValue} = require('./getCssValue');
 const {colorNames, fixedColorValues, getColorInfo} = require('./color');
 const {isValidCssNumber} = require('./functions');
 
-const responsiveRules = Object.fromEntries(
-    RESPONSIVE_PREFIXES.map(key => [key, []])
-);
-
-const responsiveLastRules = Object.fromEntries(
-    RESPONSIVE_PREFIXES.map(key => [key, []])
-);
-
 function generateCssFromClasses(classSet, config, isDev, isMinCss) {
     let css = '';
 
@@ -19,12 +11,22 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
     const lastRules = [];
 
+    // keep responsive buckets isolated per invocation to avoid cross-call leakage
+    const responsiveRules = Object.fromEntries(
+        RESPONSIVE_PREFIXES.map(key => [key, []])
+    );
+
+    const responsiveLastRules = Object.fromEntries(
+        RESPONSIVE_PREFIXES.map(key => [key, []])
+    );
+
     const propsForLastRules = ['transition-duration'];
 
     const variables = !isMinCss ? '*, ::before, ::after {\n\t--cl-translate-x: 0;\n\t--cl-translate-y: 0;\n\t--cl-rotate: 0;\n\t--cl-skew-x: 0;\n\t--cl-skew-y: 0;\n\t--cl-scale-x: 1;\n\t--cl-scale-y: 1;\n}' : '*{--cl-translate-x:0;--cl-translate-y:0;--cl-rotate:0;--cl-skew-x:0;--cl-skew-y:0;--cl-scale-x:1;--cl-scale-y:1}'
     const borderSolidRule = !isMinCss ? '* {\n \tborder: 0 solid\n}' : '*{border:0 solid}'
     rules.push(variables)
     rules.push(borderSolidRule)
+
 
     for (const className of classSet) {
         if (/--+/.test(className) || className.endsWith('-')) continue; // если больше 1 дефиса подряд в классе или класс заканчивается на дефис
@@ -38,7 +40,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         RESPONSIVE_PREFIXES.forEach(prefix => {
             const index = classNameParts.indexOf(prefix);
             if (index !== -1) {
-                responsivePrefix = classNameParts.splice(index, 1);
+                responsivePrefix = classNameParts.splice(index, 1)[0];
             }
         })
 
@@ -50,6 +52,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         })
 
 
+        // console.log(className)
         // console.log(classNameParts)
 
         let rawClass = classNameParts.join();
@@ -59,6 +62,9 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         if (/^\[.*\]$/.test(arrRawClass[0])) {
             rawClass = arrRawClass.filter(item => !/^\[.*\]$/.test(item))[0];
         }
+
+        // console.log(arrRawClass)
+        // console.log(rawClass)
 
         /* if (state.includes('nth-child') || state.includes('not')) {
              if (arrRawClass.length === 2 && /^\[.*\]$/.test(arrRawClass[0])) {
@@ -78,6 +84,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
         rawClass = isImportant ? rawClass.slice(1) : rawClass;
 
         const prefixes = Object.keys(config);
+
 
         for (let prefix of prefixes) {
             if (!rawClass.startsWith(prefix) && !rawClass.startsWith(`-${prefix}`)) continue;
@@ -103,6 +110,8 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
 
             props = !props ? config[prefix] : props;
 
+            // console.log(props)
+
             if (!props) continue;
 
             if (props.join() === 'color' && isValidCssNumber(value)) {
@@ -114,6 +123,7 @@ function generateCssFromClasses(classSet, config, isDev, isMinCss) {
             if (props.includes('color') || props.includes('background-color') || props.join() === 'border-color' || props.join() === 'divide-color') {
                 isColor = true;
                 colorInfo = getColorInfo(value)
+                // console.log(colorInfo)
             }
 
             if (isColor && (!colorInfo || (!colorInfo.hex && !colorInfo.fixedValue))) continue;

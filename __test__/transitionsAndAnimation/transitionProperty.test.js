@@ -28,3 +28,21 @@ test.each([
     const css = generateCss([invalidClass]);
     expect(css).not.toContain(`.${invalidClass}`);
 });
+
+test('state variant transition: hover:transition (фиксируем текущее поведение)', () => {
+    const css = generateCss(['hover:transition']);
+
+    expect(css).toContain('.hover\\:transition {');
+    expect(css).toContain('transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter');
+    expect(css).toContain('transition-duration: 150ms');
+    expect(css).not.toContain('.hover\\:transition:hover {');
+});
+
+test('responsive + state variant transition-none: sm:focus:transition-none (фиксируем текущее поведение)', () => {
+    const css = generateCss(['sm:focus:transition-none']);
+
+    expect(css).toContain('@media (min-width: 587px) {');
+    expect(css).toContain('.sm\\:focus\\:transition-none {');
+    expect(css).toContain('transition-property: none');
+    expect(css).not.toContain('.sm\\:focus\\:transition-none:focus {');
+});

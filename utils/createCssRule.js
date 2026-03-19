@@ -149,7 +149,7 @@ const uniqueRules = {
         },
     },*/
     space: {
-        getRule: function (cls, value, prefix, isMinCss, state, isResponsive) {
+        getRule: function (cls, value, prefix, isMinCss, state, isResponsive, isImportant) {
             let property;
 
             if (prefix === 'space-y-') property = 'margin-top';
@@ -160,17 +160,17 @@ const uniqueRules = {
             if (isResponsive && !isMinCss) {
                 return `.${escapeClass(cls)}${
                     state ? `${state}` : ''
-                } > :not([hidden])~:not([hidden]) {\n\t\t${property}: ${value}\n\t}`;
+                } > :not([hidden])~:not([hidden]) {\n\t\t${property}: ${value} ${isImportant ? '!important' : ''}\n\t}`;
             }
 
             if (!isMinCss) {
                 return `.${escapeClass(cls)}${
                     state ? `${state}` : ''
-                } > :not([hidden])~:not([hidden]) {\n\t${property}: ${value}\n}`;
+                } > :not([hidden])~:not([hidden]) {\n\t${property}: ${value} ${isImportant ? '!important' : ''}\n}`;
             }
             return `.${escapeClass(cls)}${
                 state ? `${state}` : ''
-            }>:not([hidden])~:not([hidden]){${property}:${value}}`;
+            }>:not([hidden])~:not([hidden]){${property}:${value} ${isImportant ? '!important' : ''}}`;
         }
     },
     'divide-width': {

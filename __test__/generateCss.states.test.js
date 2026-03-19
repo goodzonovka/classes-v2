@@ -27,6 +27,13 @@ test.each([
     // odd/even
     ['odd:font-bold', '.odd\\:font-bold:nth-child(odd) {', 'font-weight: 700'],
     ['even:bg-gray-200', '.even\\:bg-gray-200:nth-child(even) {', 'background-color: rgba(225, 225, 225, 1)'],
+
+    // argument states
+    ['nth-child:[3n+1]:font-bold', '.nth-child\\:\\[3n\\+1\\]\\:font-bold:nth-child(3n+1) {', 'font-weight: 700'],
+    ['not:[.is-active]:block', '.not\\:\\[\\.is-active\\]\\:block:not(.is-active) {', 'display: block'],
+
+    // transform unique rule with state
+    ['hover:transform-none', '.hover\\:transform-none:hover {', 'transform: none'],
 ])('%s → содержит %s и %s', (className, selector, expectedStyle) => {
     const css = generateCss([className]);
 
@@ -35,4 +42,20 @@ test.each([
     }
 
     expect(css).toContain(expectedStyle);
+});
+
+test('responsive + state: sm:hover:text-black', () => {
+    const css = generateCss(['sm:hover:text-black']);
+
+    expect(css).toContain('@media (min-width: 587px) {');
+    expect(css).toContain('.sm\\:hover\\:text-black:hover {');
+    expect(css).toContain('color: rgba(0, 0, 0, 1)');
+});
+
+test('responsive + argument state: md:nth-child:[2n+1]:font-bold', () => {
+    const css = generateCss(['md:nth-child:[2n+1]:font-bold']);
+
+    expect(css).toContain('@media (min-width: 768px) {');
+    expect(css).toContain('.md\\:nth-child\\:\\[2n\\+1\\]\\:font-bold:nth-child(2n+1) {');
+    expect(css).toContain('font-weight: 700');
 });

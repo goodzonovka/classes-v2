@@ -7,11 +7,20 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="../dist/css/classes-v2.css">
+    <style>
+        .bg-\[url\(\'img\/test\.svg\)\] {
+            background-image: url("img/test.svg");
+        }
+    </style>
 </head>
 <body>
-    <div class="!transform-none">
-        Lorem ipsum dolor sit amet.
-    </div>
+    <ul class="hover:transition">
+        <li>Lorem ipsum dolor sit amet.</li>
+        <li>Lorem ipsum dolor sit amet.</li>
+        <li>Lorem ipsum dolor sit amet.</li>
+        <li>Lorem ipsum dolor sit amet.</li>
+        <li>Lorem ipsum dolor sit amet.</li>
+    </ul>
 
 </body>
 </html>
