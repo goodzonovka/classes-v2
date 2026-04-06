@@ -64,7 +64,8 @@ function getValue(value, isNegative, propStr, rawClass, prefix, colorInfo) {
         if (acceptedValues.negative && isNegative) { // can be negative only strict integer
             result = '-' + result;
         }
-    } else if (acceptedValues.valuePercent && /^\d+\/\d+$/.test(value)) { // can be only number/number + percent
+    } else if (acceptedValues.valuePercent && /^\d+(?:\.\d)?\/\d+$/.test(value)) { // can be only number/number + percent
+        console.log('test')
         const [num1, num2] = value.split('/');
         result = `${(num1 * 100) / num2}%`
 

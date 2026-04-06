@@ -237,10 +237,10 @@ function createRule(
             ruleForHas = ruleForHas ? ruleForHas.slice(1, -1) : '';
             stateStr += `:has(${ruleForHas})`
         } else if (i === 'first') {
-            stateStr += ':first-child'
+            const match = cls.match(/\[(.*?)\]/);
+            stateStr += ':first-child' + (match ? ' ' + match[1] : '')
         } else if (i === 'last') {
             const match = cls.match(/\[(.*?)\]/);
-
             stateStr += ':last-child' + (match ? ' ' + match[1] : '')
         } else if (i === 'odd') {
             stateStr += ':nth-child(odd)'

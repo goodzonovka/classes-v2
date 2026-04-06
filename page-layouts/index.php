@@ -14,13 +14,6 @@
     </style>
 </head>
 <body>
-    <ul class="hover:transition">
-        <li>Lorem ipsum dolor sit amet.</li>
-        <li>Lorem ipsum dolor sit amet.</li>
-        <li>Lorem ipsum dolor sit amet.</li>
-        <li>Lorem ipsum dolor sit amet.</li>
-        <li>Lorem ipsum dolor sit amet.</li>
-    </ul>
-
+    <div class="rotate-180'"></div>
 </body>
 </html>
