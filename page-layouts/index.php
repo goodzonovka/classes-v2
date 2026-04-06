@@ -14,6 +14,6 @@
     </style>
 </head>
 <body>
-    <div class="rotate-180'"></div>
+    <div class="basis-1/2.2 w-1/2 w-23.2/100"></div>
 </body>
 </html>

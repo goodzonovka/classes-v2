@@ -8,6 +8,30 @@ const { STATES, RESPONSIVE_PREFIXES } = require('./utils/constants.js');
 
 console.time('⏱️ CSS сгенерирован за')
 
+function isValidClassToken(className) {
+  let bracketDepth = 0;
+
+  for (const char of className) {
+    if (char === '[') {
+      bracketDepth += 1;
+      continue;
+    }
+
+    if (char === ']') {
+      if (bracketDepth === 0) return false;
+      bracketDepth -= 1;
+      continue;
+    }
+
+    // Quotes are valid only inside arbitrary value blocks: e.g. bg-[url('img/test.svg')]
+    if ((char === "'" || char === '"' || char === '`') && bracketDepth === 0) {
+      return false;
+    }
+  }
+
+  return bracketDepth === 0;
+}
+
 function extractClassesFromJs(content, configMap) {
   const classSet = new Set();
   const regex = /(?:class(?:Name)?|classList\.add)\s*=\s*["'`](.*?)["'`]/gs;
@@ -18,6 +42,8 @@ function extractClassesFromJs(content, configMap) {
     const classes = classAttr.trim().split(/\s+/);
 
     for (let className of classes) {
+      if (!isValidClassToken(className)) continue;
+
       const classNameParts = className.split(':');
       let parts = [...classNameParts];
 
@@ -55,6 +81,8 @@ function extractMatchingClassesFromDomElements(elements, configMap) {
     const classes = classAttr.trim().split(/\s+/);
 
     for (let className of classes) {
+      if (!isValidClassToken(className)) continue;
+
       const classNameParts = className.split(/:(?![^\[]*\])/);
       let parts = [...classNameParts];
 

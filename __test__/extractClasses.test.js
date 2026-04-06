@@ -28,3 +28,15 @@ test('обрабатывает state префиксы', () => {
     const result = extractMatchingClassesFromDomElements(html.querySelectorAll('[class]'), config);
     expect(result).toEqual(new Set(['rtl:-scale-x-100', 'disabled:bg-gray-500', 'hover:text-gold', 'focus:border-blue-600', 'before:absolute', 'after:-translate-x-1/2', 'has:[img]:pl-24', 'first:mgt-0', 'last:mgb-0', 'odd:bg-gray-50', 'even:font-bold']));
 });
+
+test('игнорирует классы с лишней кавычкой вне []', () => {
+    const html = parse(`<div class="rotate-180' text-sm"></div>`);
+    const result = extractMatchingClassesFromDomElements(html.querySelectorAll('[class]'), config);
+    expect(result).toEqual(new Set(['text-sm']));
+});
+
+test('разрешает кавычки внутри arbitrary value в []', () => {
+    const html = parse(`<div class="bg-[url('img/test.svg')]"></div>`);
+    const result = extractMatchingClassesFromDomElements(html.querySelectorAll('[class]'), config);
+    expect(result).toEqual(new Set(["bg-[url('img/test.svg')]"]));
+});
